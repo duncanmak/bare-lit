@@ -5,8 +5,9 @@ import { LitElement, html } from "https://cdn.skypack.dev/lit";
 import { customElement, property } from "https://cdn.skypack.dev/lit/decorators";
 import { HelloApi } from "./api/api.ts";
 import { isLocal } from '../environment.ts';
+import { MockApi, RealApi } from './api/all.ts';
 
-const api: HelloApi = await import(isLocal() ? './api/mock.js' : './api/impl.js');
+const api: HelloApi = isLocal() ? MockApi : RealApi;
 
 @customElement("hello-world")
 export class HelloWorld extends LitElement {
@@ -17,6 +18,7 @@ export class HelloWorld extends LitElement {
   // TODO: Can Event handlers be async?
   async onClick(e: Event) {
     this.text = await api.hello();
+    this.requestUpdate();
   }
 
   render() {

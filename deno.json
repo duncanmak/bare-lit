@@ -3,5 +3,10 @@
     "lib": ["dom", "esnext"],
     "strict": true,
     "experimentalDecorators": true
+  },
+
+  "tasks": {
+      "build-hello": "mkdir -p build/hello && cp src/hello/index.html build/hello/index.html && deno bundle src/hello/main.ts build/hello/main.js",
+      "clean": "rm -rf build/"
   }
 }

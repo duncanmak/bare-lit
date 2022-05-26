@@ -1,6 +1,6 @@
-import { HelloApi } from "./api.js";
+import { HelloApi } from "./api.ts";
 
-export const MockApi: HelloApi = {
+export const Api: HelloApi = {
     async hello() {
         return "Mock data";
     }
