@@ -11,3 +11,5 @@ apt-get install -y \
 
 # setup and install deno
 curl -fsSL https://deno.land/x/install/install.sh | sh
+
+deno install --allow-net --allow-read https://deno.land/std@0.133.0/http/file_server.ts
