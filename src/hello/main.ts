@@ -3,8 +3,8 @@ import "https://cdn.skypack.dev/trusted-types?dts";
 // @deno-types="https://cdn.skypack.dev/lit?dts"
 import { LitElement, html } from "https://cdn.skypack.dev/lit";
 import { customElement, property } from "https://cdn.skypack.dev/lit/decorators";
-import { HelloApi } from "./api/api.js";
-import { isLocal } from '../environment.js';
+import { HelloApi } from "./api/api.ts";
+import { isLocal } from '../environment.ts';
 
 const api: HelloApi = await import(isLocal() ? './api/mock.js' : './api/impl.js');
 
