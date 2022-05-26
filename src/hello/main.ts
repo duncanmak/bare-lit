@@ -5,7 +5,7 @@ import { LitElement, html } from "https://cdn.skypack.dev/lit";
 import { customElement, property } from "https://cdn.skypack.dev/lit/decorators";
 import { HelloApi } from "./api/api.ts";
 import { isLocal } from '../environment.ts';
-import { MockApi, RealApi } from './api/all.ts';
+import { MockApi, RealApi } from './api/api.ts';
 
 const api: HelloApi = isLocal() ? MockApi : RealApi;
 
