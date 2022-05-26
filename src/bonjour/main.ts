@@ -5,8 +5,8 @@ const api = isLocal() ? MockApi : RealApi;
 const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
 const { customElement, property } = await import("https://cdn.skypack.dev/lit/decorators");
 
-@customElement("hello-world")
-export class HelloWorld extends LitElement {
+@customElement("bonjour-monde")
+export class BonjourMonde extends LitElement {
 
   @property({type: String})
   _text = "";
@@ -19,7 +19,7 @@ export class HelloWorld extends LitElement {
 
   render() {
     return html`
-      <p><button @click="${this.onClick}">Hello 3</button></p>
+      <p><button @click="${this.onClick}">Hello</button></p>
       <p>${this._text}</p>
     `;
   }
@@ -27,6 +27,6 @@ export class HelloWorld extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "hello-world": HelloWorld;
+    "bonjour-monde": BonjourMonde;
   }
 }

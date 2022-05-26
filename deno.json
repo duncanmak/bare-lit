@@ -7,6 +7,7 @@
 
   "tasks": {
       "build-hello": "mkdir -p build/hello && cp src/hello/index.html build/hello/index.html && deno bundle src/hello/main.ts build/hello/main.js",
+      "build-bonjour": "mkdir -p build/bonjour && cp src/bonjour/index.html build/bonjour/index.html && deno bundle src/bonjour/main.ts build/bonjour/main.js",
       "clean": "rm -rf build/"
   }
 }
