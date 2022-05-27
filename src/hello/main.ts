@@ -3,7 +3,7 @@ import { MockApi, RealApi } from './api/api.ts';
 const api = isLocal() ? MockApi : RealApi;
 
 const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
-const { customElement, property } = await import("https://cdn.skypack.dev/lit/decorators");
+const { customElement } = await import("https://cdn.skypack.dev/lit/decorators");
 
 @customElement("hello-world")
 export class HelloWorld extends LitElement {

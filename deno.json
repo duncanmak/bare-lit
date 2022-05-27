@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "lib": ["dom", "esnext"],
+    "lib": ["dom", "esnext", "deno.ns"],
     "strict": true,
     "experimentalDecorators": true
     },
 
   "tasks": {
+      "build": "deno task build-shell; deno task build-hello; deno task build-bonjour",
       "build-hello": "mkdir -p build/hello && cp src/hello/index.html build/hello/index.html && deno bundle src/hello/main.ts build/hello/main.js",
       "build-bonjour": "mkdir -p build/bonjour && cp src/bonjour/index.html build/bonjour/index.html && deno bundle src/bonjour/main.ts build/bonjour/main.js",
       "build-shell": "mkdir -p build/shell && cp src/shell/index.html build/shell/index.html && deno bundle src/shell/main.ts build/shell/main.js",
-      "clean": "rm -rf build/"
+      "clean": "rm -rf build/",
+      "serve": "deno run --allow-net --allow-read ./bin/server.ts"
   }
 }
