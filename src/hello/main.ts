@@ -8,18 +8,19 @@ const { customElement, property } = await import("https://cdn.skypack.dev/lit/de
 @customElement("hello-world")
 export class HelloWorld extends LitElement {
 
-  @property({type: String})
-  _text = "";
+  // TODO: This is needed until
+  // https://github.com/lit/lit-element/issues/1030 is resolved
+  static properties = { _text: {} };
+  declare _text: string;
 
-  onClick(e: Event) {
+  async onClick(e: Event) {
     console.log(e);
-    this._text = "Clicked";
-    this.requestUpdate();
+    this._text = await api.hello();
   }
 
   render() {
     return html`
-      <p><button @click="${this.onClick}">Hello 3</button></p>
+      <p><button @click="${this.onClick}">Hello</button></p>
       <p>${this._text}</p>
     `;
   }
