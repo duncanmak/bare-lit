@@ -20,8 +20,8 @@ export class BonjourMonde extends LitElement {
 
   render() {
     return html`
-      <p><button @click="${this.onClick}">Bonjour</button></p>
-      <p>${this._text}</p>
+      <p><button @click="${this.onClick}" class="bonjour">Bonjour</button></p>
+      <p class="bonjour">${this._text}</p>
     `;
   }
 }

@@ -20,8 +20,8 @@ export class HelloWorld extends LitElement {
 
   render() {
     return html`
-      <p><button @click="${this.onClick}">Hello</button></p>
-      <p>${this._text}</p>
+      <p><button @click="${this.onClick}" class="hello">Hello</button></p>
+      <p class="hello">${this._text}</p>
     `;
   }
 }

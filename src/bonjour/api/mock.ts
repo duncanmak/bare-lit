@@ -2,6 +2,8 @@ import { HelloApi } from "./api.ts";
 
 export const Api: HelloApi = {
     async hello() {
-        return "French Mock data";
+        await new Promise(r => setTimeout(r, 5000));
+
+        return "French mock data";
     }
 }
