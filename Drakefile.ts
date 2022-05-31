@@ -56,7 +56,7 @@ task('./build/index.html', ['./build/shell/index.html'], async () => {
 })
 
 desc("Serve the app")
-task("serve", ['./bin/server.ts', './build/shell/index.html', "build"], async () => {
+task("serve", ['./build/index.html', "build"], async () => {
   await sh("deno run --allow-net --allow-read ./bin/server.ts")
 });
 
