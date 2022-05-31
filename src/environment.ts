@@ -1,3 +1,3 @@
 export function isLocal() {
-    return !document.location.host.includes('microsoft');
+  return !document.location.host.includes('microsoft');
 }
