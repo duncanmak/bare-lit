@@ -5,22 +5,32 @@ import { routes as BonjourRoutes } from '../bonjour/routes.ts'
 
 const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
 const { customElement } = await import("https://cdn.skypack.dev/lit/decorators");
+const { map } = await import("https://cdn.skypack.dev/lit/directives/map.js?dts");
+
 const router = new Router(document.getElementById("outlet"));
 
-@customElement("welcome-element")
-class Welcome extends LitElement {
+const routes = [
+  ...HelloRoutes,
+  ...BonjourRoutes
+]
+
+function inShell(routes: {path: string, name: string, showInShell: boolean}[]) {
+  return routes.filter(r => r.showInShell);
+}
+
+@customElement("shell-component")
+class Shell extends LitElement {
   render() {
-    return html`<h1>Welcome</h1>`;
+    return html`
+      <nav>
+        ${map(inShell(routes), ({path, name}) => html`<a href=${path}>${name}</a>`)}
+      </nav>`;
   }
 }
 
 const defaultRoute =  {
   path: "/",
-  component: "welcome-element",
+  component: "shell-component",
 };
 
-router.setRoutes([
-  defaultRoute,
-  ...HelloRoutes,
-  ...BonjourRoutes
-]);
+router.setRoutes([defaultRoute, ...routes]);
