@@ -32,19 +32,19 @@ for (const section of SECTIONS) {
   });
 
   task(`./build/${section}/index.html`, [`./src/${section}/index.html`, `./build/${section}`], async () => {
-    await copy(`./src/${section}/index.html`, `build/${section}/index.html`, {
+    await copy(`./src/${section}/index.html`, `./build/${section}/index.html`, {
       overwrite: true,
       preserveTimestamps: true,
     });
   });
 
-  task(`./build/${section}/${section}.bundle.js`, [`./build/${section}`, ...glob("./src/${section}/*.ts")], async () => {
-    await sh(`deno bundle ./src/${section}/main.ts build/${section}/${section}.bundle.js`);
+  task(`./build/${section}/${section}.bundle.js`, [`./build/${section}`, ...glob(`./src/${section}/*.ts`)], async () => {
+    await sh(`deno bundle ./src/${section}/main.ts ./build/${section}/${section}.bundle.js`);
   });
 }
 
 desc("Serve the app")
-task("serve", ['./build/shell/index.html', "build"], async () => {
+task("serve", ['./bin/server.ts', './build/shell/index.html', "build"], async () => {
   await sh("deno run --allow-net --allow-read ./bin/server.ts")
 });
 
