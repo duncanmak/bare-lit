@@ -6,6 +6,6 @@ import { routes as BonjourRoutes } from '../bonjour/routes.ts'
 const router = new Router(document.getElementById("outlet"));
 
 router.setRoutes([
-  ...HelloRoutes(),
-  ...BonjourRoutes()
+  ...HelloRoutes,
+  ...BonjourRoutes
 ]);
