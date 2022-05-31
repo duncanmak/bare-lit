@@ -1,6 +1,6 @@
 export const routes = [
   {
-    path: "/",
+    path: "/hello",
     component: "hello-world",
     action: async () => {
       await import("../hello/main.ts");
