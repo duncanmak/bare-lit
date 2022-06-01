@@ -47,16 +47,30 @@ for (const section of SECTIONS) {
       overwrite: true,
       preserveTimestamps: true,
     });
+    await copy(`./build/${section}/${section}.bundle.js`, `build/index.bundle.js`, {
+      overwrite: true,
+      preserveTimestamps: true,
+    });
     await sh("deno run --allow-net --allow-read ./bin/server.ts");
   })
 }
 
 task('./build/index.html', ['./build/shell/index.html'], async () => {
-  await copy('./build/shell/index.html', './build/index.html');
+  await copy('./build/shell/index.html', './build/index.html', {
+    overwrite: true,
+    preserveTimestamps: true,
+  });
+})
+
+task('./build/index.bundle.js', ['./build/shell/shell.bundle.js'], async () => {
+  await copy('./build/shell/shell.bundle.js', './build/index.bundle.js', {
+    overwrite: true,
+    preserveTimestamps: true,
+  });
 })
 
 desc("Serve the app")
-task("serve", ['./build/index.html', "build"], async () => {
+task("serve", ['./build/index.html', "./build/index.bundle.js", "build"], async () => {
   await sh("deno run --allow-net --allow-read ./bin/server.ts")
 });
 

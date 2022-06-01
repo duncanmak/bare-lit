@@ -99,7 +99,7 @@ const config: PlaywrightTestConfig = {
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'deno task serve',
+    command: 'deno task drake serve',
     port: 8000,
   },
 };

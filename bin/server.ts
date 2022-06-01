@@ -15,7 +15,7 @@ serve((req) => {
 
 const map = new Map([
   ["/", "build/index.html"],
-  ["/main.js", "build/shell/shell.bundle.js"],
+  ["/main.js", "build/index.bundle.js"],
   ["/hello/main.ts", "build/hello/hello.bundle.js"],
   ["/bonjour/main.ts", "build/bonjour/bonjour.bundle.js"]
 ])

@@ -1,8 +1,8 @@
 import { test, expect, type Page } from '@playwright/test';
 
-// test.beforeEach(async ({ page }) => {
-//   await page.goto('http://localhost:8000/');
-// });
+test.beforeEach(async ({ page }) => {
+  await page.goto('http://localhost:8000/');
+});
 
 const MOCK_DATA = [
   'English mock data',
@@ -12,7 +12,11 @@ const MOCK_DATA = [
 test.describe('Great Tests', () => {
   test('Hello page', async ({ page }) => {
 
-    await page.goto('http://localhost:8000/')
+    // navigate
+    await page.locator('a.Hello').click();
+
+    // check
+    await expect(page.locator('button.hello')).toHaveText(['Hello']);
 
     // click
     await page.locator('button.hello').click();
@@ -22,16 +26,15 @@ test.describe('Great Tests', () => {
 
     // check
     await expect(page.locator('p.hello')).toHaveText([MOCK_DATA[0]]);
-
-    // navigate
-    await page.locator('a.bonjour').click();
-
-    // check
-    await expect(page.locator('button.bonjour')).toHaveText(["Bonjour"]);
   })
 
   test('Bonjour page', async ({ page }) => {
-    await page.goto('http://localhost:8000/bonjour')
+
+    // navigate
+    await page.locator('a.Bonjour').click();
+
+    // check
+    await expect(page.locator('button.bonjour')).toHaveText(["Bonjour"]);
 
     // click
     await page.locator('button.bonjour').click();
@@ -41,11 +44,5 @@ test.describe('Great Tests', () => {
 
     // check
     await expect(page.locator('p.bonjour')).toHaveText([MOCK_DATA[1]]);
-
-    // navigate
-    await page.locator('a.hello').click();
-
-    // check
-    await expect(page.locator('button.hello')).toHaveText(['Hello']);
   })
 })

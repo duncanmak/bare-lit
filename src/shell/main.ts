@@ -1,7 +1,7 @@
 //@deno-types https://unpkg.com/browse/@vaadin/router@1.7.4/interfaces.d.ts
 import { Router } from "https://cdn.skypack.dev/@vaadin/router";
-import { routes as HelloRoutes } from '../hello/routes.ts'
-import { routes as BonjourRoutes } from '../bonjour/routes.ts'
+import { routes as HelloRoutes } from '../hello/section.ts'
+import { routes as BonjourRoutes } from '../bonjour/section.ts'
 
 const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
 const { customElement } = await import("https://cdn.skypack.dev/lit/decorators");
@@ -23,7 +23,7 @@ class Shell extends LitElement {
   render() {
     return html`
       <nav>
-        ${map(inShell(routes), ({path, name}) => html`<a href=${path}>${name}</a>`)}
+        ${map(inShell(routes), ({path, name}) => html`<a href=${path} class="${name}">${name}</a>`)}
       </nav>`;
   }
 }
