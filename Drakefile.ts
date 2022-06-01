@@ -18,6 +18,10 @@ async function _copy(...pairs: [string, string][]) {
   await Promise.all(pairs.map(([src, dst]) => copy(src, dst, opts)));
 }
 
+async function runServer() {
+  await sh("deno run --allow-net --allow-read ./bin/server.ts");
+}
+
 desc("Clean build output");
 task("clean", [], async () => {
   await emptyDir("build");
@@ -67,7 +71,7 @@ for (const section of SECTIONS) {
       [`./src/${section}/index.html`, "./build/index.html"],
       [`./build/${section}/${section}.bundle.js`, "./build/index.bundle.js"]
     );
-    await sh("deno run --allow-net --allow-read ./bin/server.ts");
+    await runServer();
   });
 }
 
@@ -83,9 +87,7 @@ desc("Serve the app");
 task(
   "serve",
   ["./build/index.html", "./build/index.bundle.js", "build"],
-  async () => {
-    await sh("deno run --allow-net --allow-read ./bin/server.ts");
-  }
+  runServer
 );
 
 await run();
