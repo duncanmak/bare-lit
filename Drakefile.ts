@@ -13,6 +13,11 @@ import {
 
 const SECTIONS = ["hello", "bonjour", "shell"];
 
+async function _copy(...pairs: [string, string][]) {
+  const opts = { overwrite: true };
+  await Promise.all(pairs.map(([src, dst]) => copy(src, dst, opts)));
+}
+
 desc("Clean build output");
 task("clean", [], async () => {
   await emptyDir("build");
@@ -21,17 +26,15 @@ task("clean", [], async () => {
 desc("Build everything");
 task(
   "build",
-  SECTIONS.map((section) => `build-${section}`),
-  () => {}
+  SECTIONS.map((section) => `build-${section}`)
 );
 
 for (const section of SECTIONS) {
   desc(`Build ${section}`);
-  task(
-    `build-${section}`,
-    [`./build/${section}/${section}.bundle.js`],
-    () => {}
-  );
+  task(`build-${section}`, [
+    `./build/${section}/${section}.bundle.js`,
+    `./build/${section}/index.html`,
+  ]);
 
   task(`./build/${section}`, [], async () => {
     await ensureDir(`./build/${section}`);
@@ -41,14 +44,10 @@ for (const section of SECTIONS) {
     `./build/${section}/index.html`,
     [`./src/${section}/index.html`, `./build/${section}`],
     async () => {
-      await copy(
+      await _copy([
         `./src/${section}/index.html`,
         `./build/${section}/index.html`,
-        {
-          overwrite: true,
-          preserveTimestamps: true,
-        }
-      );
+      ]);
     }
   );
 
@@ -62,36 +61,22 @@ for (const section of SECTIONS) {
     }
   );
 
-  desc(`Serve ${section}`)
+  desc(`Serve ${section}`);
   task(`serve-${section}`, [`build-${section}`], async () => {
-    await copy(`./src/${section}/index.html`, `build/index.html`, {
-      overwrite: true,
-      preserveTimestamps: true,
-    });
-    await copy(
-      `./build/${section}/${section}.bundle.js`,
-      `build/index.bundle.js`,
-      {
-        overwrite: true,
-        preserveTimestamps: true,
-      }
+    await _copy(
+      [`./src/${section}/index.html`, "./build/index.html"],
+      [`./build/${section}/${section}.bundle.js`, "./build/index.bundle.js"]
     );
     await sh("deno run --allow-net --allow-read ./bin/server.ts");
   });
 }
 
 task("./build/index.html", ["./build/shell/index.html"], async () => {
-  await copy("./build/shell/index.html", "./build/index.html", {
-    overwrite: true,
-    preserveTimestamps: true,
-  });
+  await _copy(["./build/shell/index.html", "./build/index.html"]);
 });
 
 task("./build/index.bundle.js", ["./build/shell/shell.bundle.js"], async () => {
-  await copy("./build/shell/shell.bundle.js", "./build/index.bundle.js", {
-    overwrite: true,
-    preserveTimestamps: true,
-  });
+  await _copy(["./build/shell/shell.bundle.js", "./build/index.bundle.js"]);
 });
 
 desc("Serve the app");
