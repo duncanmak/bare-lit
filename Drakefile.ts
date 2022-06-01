@@ -1,4 +1,10 @@
-import { desc, glob, run, sh, task, } from "https://deno.land/x/drake@v1.5.2/mod.ts";
+import {
+  desc,
+  glob,
+  run,
+  sh,
+  task,
+} from "https://deno.land/x/drake@v1.5.2/mod.ts";
 import {
   copy,
   emptyDir,
@@ -31,47 +37,70 @@ for (const section of SECTIONS) {
     await ensureDir(`./build/${section}`);
   });
 
-  task(`./build/${section}/index.html`, [`./src/${section}/index.html`, `./build/${section}`], async () => {
-    await copy(`./src/${section}/index.html`, `./build/${section}/index.html`, {
-      overwrite: true,
-      preserveTimestamps: true,
-    });
-  });
+  task(
+    `./build/${section}/index.html`,
+    [`./src/${section}/index.html`, `./build/${section}`],
+    async () => {
+      await copy(
+        `./src/${section}/index.html`,
+        `./build/${section}/index.html`,
+        {
+          overwrite: true,
+          preserveTimestamps: true,
+        }
+      );
+    }
+  );
 
-  task(`./build/${section}/${section}.bundle.js`, [`./build/${section}`, ...glob(`./src/${section}/*.ts`)], async () => {
-    await sh(`deno bundle ./src/${section}/main.ts ./build/${section}/${section}.bundle.js`);
-  });
+  task(
+    `./build/${section}/${section}.bundle.js`,
+    [`./build/${section}`, ...glob(`./src/${section}/*.ts`)],
+    async () => {
+      await sh(
+        `deno bundle ./src/${section}/main.ts ./build/${section}/${section}.bundle.js`
+      );
+    }
+  );
 
+  desc(`Serve ${section}`)
   task(`serve-${section}`, [`build-${section}`], async () => {
     await copy(`./src/${section}/index.html`, `build/index.html`, {
       overwrite: true,
       preserveTimestamps: true,
     });
-    await copy(`./build/${section}/${section}.bundle.js`, `build/index.bundle.js`, {
-      overwrite: true,
-      preserveTimestamps: true,
-    });
+    await copy(
+      `./build/${section}/${section}.bundle.js`,
+      `build/index.bundle.js`,
+      {
+        overwrite: true,
+        preserveTimestamps: true,
+      }
+    );
     await sh("deno run --allow-net --allow-read ./bin/server.ts");
-  })
+  });
 }
 
-task('./build/index.html', ['./build/shell/index.html'], async () => {
-  await copy('./build/shell/index.html', './build/index.html', {
+task("./build/index.html", ["./build/shell/index.html"], async () => {
+  await copy("./build/shell/index.html", "./build/index.html", {
     overwrite: true,
     preserveTimestamps: true,
   });
-})
-
-task('./build/index.bundle.js', ['./build/shell/shell.bundle.js'], async () => {
-  await copy('./build/shell/shell.bundle.js', './build/index.bundle.js', {
-    overwrite: true,
-    preserveTimestamps: true,
-  });
-})
-
-desc("Serve the app")
-task("serve", ['./build/index.html', "./build/index.bundle.js", "build"], async () => {
-  await sh("deno run --allow-net --allow-read ./bin/server.ts")
 });
+
+task("./build/index.bundle.js", ["./build/shell/shell.bundle.js"], async () => {
+  await copy("./build/shell/shell.bundle.js", "./build/index.bundle.js", {
+    overwrite: true,
+    preserveTimestamps: true,
+  });
+});
+
+desc("Serve the app");
+task(
+  "serve",
+  ["./build/index.html", "./build/index.bundle.js", "build"],
+  async () => {
+    await sh("deno run --allow-net --allow-read ./bin/server.ts");
+  }
+);
 
 await run();
