@@ -1,21 +1,21 @@
 import { serve } from "https://deno.land/std@0.141.0/http/server.ts";
 import { serveFile } from "https://deno.land/std@0.141.0/http/file_server.ts";
-import { join } from "https://deno.land/std@0.141.0/path/mod.ts";
+import { join, parse } from "https://deno.land/std@0.141.0/path/mod.ts";
+
+const _ = (s: string) => join(Deno.cwd(), s);
 
 serve((req) => {
-  const pathname = new URL(req.url).pathname;
-  if (map.has(pathname)) {
-    const filename = join(Deno.cwd(), map.get(pathname)!)
-    return serveFile(req, filename);
+  const pathname = parse(new URL(req.url).pathname);
+
+  console.log(pathname);
+  if (pathname.base === "") return serveFile(req, _("build/index.html"));
+
+  try {
+    return serveFile(
+      req,
+      pathname.ext !== "" ? _(`build/${pathname.base}`) : _("build/index.html")
+    );
+  } catch {
+    return serveFile(req, _("build/index.html"));
   }
-
-  // Do dynamic responses
-  return serveFile(req, map.get("/")!);
 });
-
-const map = new Map([
-  ["/", "build/index.html"],
-  ["/main.js", "build/index.bundle.js"],
-  ["/hello/main.ts", "build/hello/hello.bundle.js"],
-  ["/bonjour/main.ts", "build/bonjour/bonjour.bundle.js"]
-])

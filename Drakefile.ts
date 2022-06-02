@@ -4,6 +4,7 @@ import {
   run,
   sh,
   task,
+  updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
 import {
   copy,
@@ -22,6 +23,22 @@ async function runServer() {
   await sh("deno run --allow-net --allow-read ./bin/server.ts");
 }
 
+function installSection(section: string, filename: string) {
+  if (filename === "./build/index.html")
+    return updateFile(
+      filename,
+      new RegExp("./shell.bundle.js"),
+      `./${section}.bundle.js`
+    );
+  else if (filename === "./src/app.ts")
+    return updateFile(
+      filename,
+      new RegExp(`import { config } from "./shell/section.ts"`),
+      `import { config } from "./${section}/section.ts"`
+    );
+  else console.log(`Don't know how to install ${section} in ${filename}`);
+}
+
 desc("Clean build output");
 task("clean", [], async () => {
   await emptyDir("build");
@@ -35,59 +52,42 @@ task(
 
 for (const section of SECTIONS) {
   desc(`Build ${section}`);
-  task(`build-${section}`, [
-    `./build/${section}/${section}.bundle.js`,
-    `./build/${section}/index.html`,
-  ]);
-
-  task(`./build/${section}`, [], async () => {
-    await ensureDir(`./build/${section}`);
-  });
+  task(`build-${section}`, [`./build/${section}.bundle.js`]);
 
   task(
-    `./build/${section}/index.html`,
-    [`./src/${section}/index.html`, `./build/${section}`],
-    async () => {
-      await _copy([
-        `./src/${section}/index.html`,
-        `./build/${section}/index.html`,
-      ]);
-    }
-  );
-
-  task(
-    `./build/${section}/${section}.bundle.js`,
-    [`./build/${section}`, ...glob(`./src/${section}/*.ts`)],
+    `./build/${section}.bundle.js`,
+    [...glob(`./src/${section}/*.ts`)],
     async () => {
       await sh(
-        `deno bundle ./src/${section}/main.ts ./build/${section}/${section}.bundle.js`
+        `deno bundle ./src/${section}/main.ts ./build/${section}.bundle.js`
       );
     }
   );
 
   desc(`Serve ${section}`);
-  task(`serve-${section}`, [`build-${section}`], async () => {
-    await _copy(
-      [`./src/${section}/index.html`, "./build/index.html"],
-      [`./build/${section}/${section}.bundle.js`, "./build/index.bundle.js"]
-    );
-    await runServer();
-  });
+  task(
+    `serve-${section}`,
+    [`build-${section}`, "./build/index.html"],
+    async () => {
+      console.log(
+        "Replacing index.html",
+        await installSection(section, "./build/index.html")
+      );
+      console.log(
+        "Replacing app.ts",
+        await installSection(section, "./src/app.ts")
+      );
+      await sh(`deno bundle ./src/app.ts ./build/app.js`);
+      await runServer();
+    }
+  );
 }
 
-task("./build/index.html", ["./build/shell/index.html"], async () => {
-  await _copy(["./build/shell/index.html", "./build/index.html"]);
-});
-
-task("./build/index.bundle.js", ["./build/shell/shell.bundle.js"], async () => {
-  await _copy(["./build/shell/shell.bundle.js", "./build/index.bundle.js"]);
+task("./build/index.html", ["./src/index.html"], async () => {
+  await _copy([`./src/index.html`, "./build/index.html"]);
 });
 
 desc("Serve the app");
-task(
-  "serve",
-  ["./build/index.html", "./build/index.bundle.js", "build"],
-  runServer
-);
+task("serve", ["build", "./build/index.html", "serve-shell"]);
 
 await run();
