@@ -27,13 +27,13 @@ function installSection(section: string, filename: string) {
   if (filename === "./build/index.html")
     return updateFile(
       filename,
-      new RegExp("./shell.bundle.js"),
+      /\.\/shell.bundle.js/,
       `./${section}.bundle.js`
     );
   else if (filename === "./src/app.ts")
     return updateFile(
       filename,
-      new RegExp(`import { config } from "./shell/section.ts"`),
+      /import { config } from "\.\/\w+\/section.ts"/,
       `import { config } from "./${section}/section.ts"`
     );
   else console.log(`Don't know how to install ${section} in ${filename}`);
@@ -47,7 +47,10 @@ task("clean", [], async () => {
 desc("Build everything");
 task(
   "build",
-  SECTIONS.map((section) => `build-${section}`)
+  SECTIONS.map((section) => `build-${section}`),
+  async () => {
+    await sh(`deno bundle ./src/app.ts ./build/app.js`);
+  }
 );
 
 for (const section of SECTIONS) {
