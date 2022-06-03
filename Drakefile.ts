@@ -9,7 +9,6 @@ import {
 import {
   copy,
   emptyDir,
-  ensureDir,
 } from "https://deno.land/std@0.141.0/fs/mod.ts";
 
 const SECTIONS = ["hello", "bonjour", "shell"];
@@ -30,7 +29,7 @@ function installSection(section: string, filename: string) {
       /\.\/shell.bundle.js/,
       `./${section}.bundle.js`
     );
-  else if (filename === "./src/app.ts")
+  else if (filename === "./src/app.tmp.ts")
     return updateFile(
       filename,
       /import { config } from "\.\/\w+\/section.ts"/,
@@ -47,9 +46,9 @@ task("clean", [], async () => {
 desc("Build everything");
 task(
   "build",
-  SECTIONS.map((section) => `build-${section}`),
+  [...SECTIONS.map((section) => `build-${section}`), './src/app.tmp.ts'],
   async () => {
-    await sh(`deno bundle ./src/app.ts ./build/app.js`);
+    await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
   }
 );
 
@@ -70,7 +69,7 @@ for (const section of SECTIONS) {
   desc(`Serve ${section}`);
   task(
     `serve-${section}`,
-    [`build-${section}`, "./build/index.html"],
+    [`build-${section}`, "./build/index.html", "./src/app.tmp.ts"],
     async () => {
       console.log(
         "Replacing index.html",
@@ -78,13 +77,17 @@ for (const section of SECTIONS) {
       );
       console.log(
         "Replacing app.ts",
-        await installSection(section, "./src/app.ts")
+        await installSection(section, "./src/app.tmp.ts")
       );
-      await sh(`deno bundle ./src/app.ts ./build/app.js`);
+      await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
       await runServer();
     }
   );
 }
+
+task('./src/app.tmp.ts', ["./src/app.ts"], async () => {
+  await _copy(["./src/app.ts", "./src/app.tmp.ts"]);
+})
 
 task("./build/index.html", ["./src/index.html"], async () => {
   await _copy([`./src/index.html`, "./build/index.html"]);
