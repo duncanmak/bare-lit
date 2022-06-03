@@ -77,12 +77,12 @@ for (const section of SECTIONS) {
   );
 }
 
-task("./src/app.tmp.ts", ["./src/app.ts"], () =>
-  copy("./src/app.ts", "./src/app.tmp.ts", { overwrite: true })
+task("./src/app.tmp.ts", ["./src/app.ts"], async () =>
+  await copy("./src/app.ts", "./src/app.tmp.ts", { overwrite: true })
 );
 
-task("./build/index.html", ["./src/index.html"], () =>
-  copy(`./src/index.html`, "./build/index.html", { overwrite: true })
+task("./build/index.html", ["./src/index.html"], async () =>
+  await copy(`./src/index.html`, "./build/index.html", { overwrite: true })
 );
 
 desc("Serve the app");
