@@ -1,5 +1,5 @@
-import { config as Hello } from "../hello/section.ts";
-import { config as Bonjour } from "../bonjour/section.ts";
+import { config as Hello } from "../hello/config.ts";
+import { config as Bonjour } from "../bonjour/config.ts";
 
 export const sections = [Hello, Bonjour];
 

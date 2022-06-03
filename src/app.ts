@@ -1,7 +1,7 @@
 import { router } from "./router.ts";
 
 // NOTE: may be replaced by Drakefile
-import { config } from "./shell/section.ts";
+import { config } from "./shell/config.ts";
 
 const routes = [
   {

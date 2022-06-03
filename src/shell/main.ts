@@ -1,4 +1,4 @@
-import { sections } from './section.ts';
+import { sections } from './config.ts';
 
 const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
 const { customElement } = await import("https://cdn.skypack.dev/lit/decorators?dts");

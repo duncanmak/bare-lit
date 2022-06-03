@@ -25,8 +25,8 @@ function installSection(section: string, filename: string) {
   else if (filename === "./src/app.tmp.ts")
     return updateFile(
       filename,
-      /import { config } from "\.\/\w+\/section.ts"/,
-      `import { config } from "./${section}/section.ts"`
+      /import { config } from "\.\/\w+\/config.ts"/,
+      `import { config } from "./${section}/config.ts"`
     );
   else console.log(`Don't know how to install ${section} in ${filename}`);
 }
