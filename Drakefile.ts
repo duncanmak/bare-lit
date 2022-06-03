@@ -6,17 +6,10 @@ import {
   task,
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
-import {
-  copy,
-  emptyDir,
-} from "https://deno.land/std@0.141.0/fs/mod.ts";
+import { copy, emptyDir,  } from "https://deno.land/std@0.141.0/fs/mod.ts";
 
-const SECTIONS = ["hello", "bonjour", "shell"];
-
-async function _copy(...pairs: [string, string][]) {
-  const opts = { overwrite: true };
-  await Promise.all(pairs.map(([src, dst]) => copy(src, dst, opts)));
-}
+const SECTIONS = [...Deno.readDirSync("./src")].reduce(
+  (acc: string[], i) => i.isDirectory ? [i.name, ...acc] : acc, []);
 
 async function runServer() {
   await sh("deno run --allow-net --allow-read ./bin/server.ts");
@@ -39,17 +32,16 @@ function installSection(section: string, filename: string) {
 }
 
 desc("Clean build output");
-task("clean", [], async () => {
-  await emptyDir("build");
-});
+task("clean", [], async () => await emptyDir("build"));
 
 desc("Build everything");
+task("build", ["build-sections", "./src/app.tmp.ts"], async () => {
+  await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
+});
+
 task(
-  "build",
-  [...SECTIONS.map((section) => `build-${section}`), './src/app.tmp.ts'],
-  async () => {
-    await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
-  }
+  "build-sections",
+  SECTIONS.map((section) => `build-${section}`)
 );
 
 for (const section of SECTIONS) {
@@ -58,7 +50,7 @@ for (const section of SECTIONS) {
 
   task(
     `./build/${section}.bundle.js`,
-    [...glob(`./src/${section}/*.ts`)],
+    glob(`./src/${section}/*.ts`),
     async () => {
       await sh(
         `deno bundle ./src/${section}/main.ts ./build/${section}.bundle.js`
@@ -76,7 +68,7 @@ for (const section of SECTIONS) {
         await installSection(section, "./build/index.html")
       );
       console.log(
-        "Replacing app.ts",
+        "Replacing app.tmp.ts",
         await installSection(section, "./src/app.tmp.ts")
       );
       await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
@@ -85,15 +77,15 @@ for (const section of SECTIONS) {
   );
 }
 
-task('./src/app.tmp.ts', ["./src/app.ts"], async () => {
-  await _copy(["./src/app.ts", "./src/app.tmp.ts"]);
-})
+task("./src/app.tmp.ts", ["./src/app.ts"], () =>
+  copy("./src/app.ts", "./src/app.tmp.ts", { overwrite: true })
+);
 
-task("./build/index.html", ["./src/index.html"], async () => {
-  await _copy([`./src/index.html`, "./build/index.html"]);
-});
+task("./build/index.html", ["./src/index.html"], () =>
+  copy(`./src/index.html`, "./build/index.html", { overwrite: true })
+);
 
 desc("Serve the app");
-task("serve", ["build", "./build/index.html", "serve-shell"]);
+task("serve", ["build-sections", "serve-shell"]);
 
 await run();
