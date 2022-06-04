@@ -86,7 +86,7 @@ task("./build/index.html", ["./src/index.html"], async () =>
 );
 
 task("build-assets", [], async () =>
-  await copy(`./assets/`, "./build/", { overwrite: false })
+  await copy(`./assets/`, "./build/", { overwrite: true })
 );
 
 desc("Serve the app");
