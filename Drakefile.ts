@@ -85,7 +85,16 @@ task("./build/index.html", ["./src/index.html"], async () =>
   await copy(`./src/index.html`, "./build/index.html", { overwrite: true })
 );
 
+task("build-assets", [], async () =>
+  await copy(`./assets/`, "./build/", { overwrite: false })
+);
+
 desc("Serve the app");
 task("serve", ["build-sections", "serve-shell"]);
+
+desc("Serve the app, without building");
+task("quick-serve", [], async () => {
+  await runServer();
+});
 
 await run();
