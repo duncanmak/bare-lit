@@ -1,5 +1,6 @@
 import {
   desc,
+  execute,
   glob,
   run,
   sh,
@@ -31,12 +32,17 @@ function installSection(section: string, filename: string) {
   else console.log(`Don't know how to install ${section} in ${filename}`);
 }
 
+async function buildAppJs(section?: string) {
+  if (section) execute(`./src/${section}/config.ts`);
+  await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
+}
+
 desc("Clean build output");
 task("clean", [], async () => await emptyDir("build"));
 
 desc("Build everything");
 task("build", ["build-sections", "./src/app.tmp.ts"], async () => {
-  await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
+  await buildAppJs();
 });
 
 task(
@@ -47,11 +53,13 @@ task(
 for (const section of SECTIONS) {
   desc(`Build ${section}`);
   task(`build-${section}`, [`./build/${section}.bundle.js`]);
+  task(`src/${section}/config.ts`, []);
 
   task(
     `./build/${section}.bundle.js`,
     glob(`./src/${section}/*.ts`),
     async () => {
+      await execute(`./src/${section}/config.ts`);
       await sh(
         `deno bundle ./src/${section}/main.ts ./build/${section}.bundle.js`
       );
@@ -71,7 +79,7 @@ for (const section of SECTIONS) {
         "Replacing app.tmp.ts",
         await installSection(section, "./src/app.tmp.ts")
       );
-      await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
+      await buildAppJs(section);
       await runServer();
     }
   );
