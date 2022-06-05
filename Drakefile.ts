@@ -7,7 +7,7 @@ import {
   task,
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
-import { copy, emptyDir,  } from "https://deno.land/std@0.141.0/fs/mod.ts";
+import { copy, emptyDir  } from "https://deno.land/std@0.141.0/fs/mod.ts";
 
 const SECTIONS = [...Deno.readDirSync("./src")].reduce(
   (acc: string[], i) => i.isDirectory ? [i.name, ...acc] : acc, []);
@@ -38,7 +38,13 @@ async function buildAppJs(section?: string) {
 }
 
 desc("Clean build output");
-task("clean", [], async () => await emptyDir("build"));
+task("clean", [], async () => {
+  await emptyDir("build");
+  try {
+    await Deno.remove("./src/app.tmp.ts");
+    await Deno.remove("./src/shell/config.ts");
+  } catch {}
+});
 
 desc("Build everything");
 task("build", ["build-sections", "./src/app.tmp.ts"], async () => {
@@ -85,9 +91,13 @@ for (const section of SECTIONS) {
   );
 }
 
-task("./src/app.tmp.ts", ["./src/app.ts"], async () =>
-  await copy("./src/app.ts", "./src/app.tmp.ts", { overwrite: true })
-);
+task("./src/shell/config.ts").action = async () => {
+  await sh("deno run --allow-net --allow-read --allow-write ./src/shell/generate-config.ts");
+};
+
+task("./src/app.tmp.ts", ["./src/generate-app.ts"], async () => {
+  await sh("deno run --allow-net --allow-read --allow-write ./src/generate-app.ts");
+});
 
 task("./build/index.html", ["./src/index.html"], async () =>
   await copy(`./src/index.html`, "./build/index.html", { overwrite: true })
