@@ -91,7 +91,9 @@ for (const section of SECTIONS) {
   );
 }
 
-task("./src/shell/config.ts").action = async () => {
+var t = task("./src/shell/config.ts");
+t.prereqs = ['./src/shell/generate-config.ts'];
+t.action = async () => {
   await sh("deno run --allow-net --allow-read --allow-write ./src/shell/generate-config.ts");
 };
 
