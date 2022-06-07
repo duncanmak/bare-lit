@@ -1,7 +1,9 @@
 import { config } from './config.ts';
 
 const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
-const { customElement } = await import("https://cdn.skypack.dev/lit/decorators?dts");
+const { customElement } = await import(
+  "https://cdn.skypack.dev/lit/decorators/custom-element.js"
+);
 const { map } = await import("https://cdn.skypack.dev/lit/directives/map.js?dts");
 
 

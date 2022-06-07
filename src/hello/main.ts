@@ -7,8 +7,10 @@ const api = isLocal() ? MockApi : RealApi;
 
 const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
 const { customElement } = await import(
-  "https://cdn.skypack.dev/lit/decorators"
+  "https://cdn.skypack.dev/lit/decorators/custom-element.js"
 );
+
+await import("https://unpkg.com/@github/time-elements@latest?module");
 
 const { router } = await import('./' + 'app.js');
 
@@ -59,7 +61,13 @@ export class HelloWorld extends LitElement {
     const text = this.location.params["name"] || 'Hello';
     return html`
       <p><button @click="${this.onClick}" class="hello">${text}</button></p>
-      <p class="hello">${this._text}</p>
+      <p>${this._text}</p>
+<p>
+    Time ago:
+    <time-ago datetime="1970-01-01T00:00:00.000Z">
+      Oops! This browser doesn't support Web Components.
+    </time-ago>
+  </p>
     `;
   }
 }
