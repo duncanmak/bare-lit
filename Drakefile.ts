@@ -23,17 +23,13 @@ function installSection(section: string, filename: string) {
       /\.\/shell.bundle.js/,
       `./${section}.bundle.js`
     );
-  else if (filename === "./src/app.tmp.ts")
-    return updateFile(
-      filename,
-      /import { config } from "\.\/\w+\/config.ts"/,
-      `import { config } from "./${section}/config.ts"`
-    );
-  else console.log(`Don't know how to install ${section} in ${filename}`);
+  else
+    console.log(`Don't know how to install ${section} in ${filename}`);
 }
 
-async function buildAppJs(section?: string) {
+async function buildAppJs(section: string = 'shell') {
   if (section) execute(`./src/${section}/config.ts`);
+  await sh(`deno run --allow-net --allow-read --allow-write ./src/generate-app.ts ${section}`);
   await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
 }
 
@@ -47,7 +43,7 @@ task("clean", [], async () => {
 });
 
 desc("Build everything");
-task("build", ["build-sections", "./src/app.tmp.ts"], async () => {
+task("build", ["build-sections"], async () => {
   await buildAppJs();
 });
 
@@ -75,16 +71,13 @@ for (const section of SECTIONS) {
   desc(`Serve ${section}`);
   task(
     `serve-${section}`,
-    [`build-${section}`, "./build/index.html", "./src/app.tmp.ts", "build-assets"],
+    [`build-${section}`, "./build/index.html", "build-assets"],
     async () => {
       console.log(
         "Replacing index.html",
         await installSection(section, "./build/index.html")
       );
-      console.log(
-        "Replacing app.tmp.ts",
-        await installSection(section, "./src/app.tmp.ts")
-      );
+
       await buildAppJs(section);
       await runServer();
     }
@@ -96,10 +89,6 @@ t.prereqs = ['./src/shell/generate-config.ts'];
 t.action = async () => {
   await sh("deno run --allow-net --allow-read --allow-write ./src/shell/generate-config.ts");
 };
-
-task("./src/app.tmp.ts", ["./src/generate-app.ts"], async () => {
-  await sh("deno run --allow-net --allow-read --allow-write ./src/generate-app.ts");
-});
 
 task("./build/index.html", ["./src/index.html"], async () =>
   await copy(`./src/index.html`, "./build/index.html", { overwrite: true })

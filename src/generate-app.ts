@@ -1,8 +1,8 @@
 import { join, fromFileUrl } from "https://deno.land/std/path/mod.ts";
 import { toString } from './helpers.ts';
 
-// NOTE: may be replaced by Drakefile
-import { config } from "./shell/config.ts";
+const configTs = `./${Deno.args[0]}/config.ts`
+const { config } = await import(configTs);
 
 const routes = [
   {
