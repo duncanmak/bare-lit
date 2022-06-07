@@ -75,7 +75,7 @@ for (const section of SECTIONS) {
   desc(`Serve ${section}`);
   task(
     `serve-${section}`,
-    [`build-${section}`, "./build/index.html", "./src/app.tmp.ts"],
+    [`build-${section}`, "./build/index.html", "./src/app.tmp.ts", "build-assets"],
     async () => {
       console.log(
         "Replacing index.html",

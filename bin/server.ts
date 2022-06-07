@@ -6,16 +6,16 @@ const _ = (s: string) => join(Deno.cwd(), s);
 
 serve((req) => {
   const pathname = parse(new URL(req.url).pathname);
+  const indexHtml = serveFile(req, _("build/index.html"));
 
   console.log(pathname);
-  if (pathname.base === "") return serveFile(req, _("build/index.html"));
+  if (pathname.base === "") return indexHtml;
 
   try {
-    return serveFile(
-      req,
-      pathname.ext !== "" ? _(`build/${pathname.base}`) : _("build/index.html")
-    );
+    return pathname.ext !== ""
+      ? serveFile(req, _(`build/${pathname.base}`))
+      : indexHtml;
   } catch {
-    return serveFile(req, _("build/index.html"));
+    return indexHtml;
   }
 });
