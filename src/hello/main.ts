@@ -56,7 +56,7 @@ export class HelloWorld extends LitElement {
     //   meat: [],
     // };
 
-    const text = this.location.params["name"];
+    const text = this.location.params["name"] || 'Hello';
     return html`
       <p><button @click="${this.onClick}" class="hello">${text}</button></p>
       <p class="hello">${this._text}</p>
