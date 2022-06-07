@@ -1,6 +1,5 @@
 //@deno-types="https://unpkg.com/@vaadin/router@1.7.4/interfaces.d.ts"
 // import { RouterLocation } from "https://cdn.skypack.dev/@vaadin/router";
-import { router } from '../router.ts';
 import { isLocal } from "../environment.ts";
 import { MockApi, RealApi } from "./api/api.ts";
 
@@ -10,6 +9,9 @@ const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
 const { customElement } = await import(
   "https://cdn.skypack.dev/lit/decorators"
 );
+
+const { router } = await import('./' + 'app.js');
+
 
 @customElement("hello-world")
 export class HelloWorld extends LitElement {
