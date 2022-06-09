@@ -13,7 +13,7 @@ test.describe('Great Tests', () => {
   test('Hello page', async ({ page }) => {
 
     // navigate
-    await page.locator('a.Hello').click();
+    await page.locator('a.hello').click();
 
     // check
     await expect(page.locator('button.hello')).toHaveText(['Hello']);
@@ -31,7 +31,7 @@ test.describe('Great Tests', () => {
   test('Bonjour page', async ({ page }) => {
 
     // navigate
-    await page.locator('a.Bonjour').click();
+    await page.locator('a.bonjour').click();
 
     // check
     await expect(page.locator('button.bonjour')).toHaveText(["Bonjour"]);

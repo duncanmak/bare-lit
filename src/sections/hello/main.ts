@@ -61,7 +61,7 @@ export class HelloWorld extends LitElement {
     const text = this.location.params["name"] || 'Hello';
     return html`
       <p><button @click="${this.onClick}" class="hello">${text}</button></p>
-      <p>${this._text}</p>
+      <p class="hello">${this._text}</p>
 <p>
     Time ago:
     <time-ago datetime="1970-01-01T00:00:00.000Z">
