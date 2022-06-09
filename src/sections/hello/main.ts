@@ -1,6 +1,6 @@
 //@deno-types="https://unpkg.com/@vaadin/router@1.7.4/interfaces.d.ts"
 // import { RouterLocation } from "https://cdn.skypack.dev/@vaadin/router";
-import { isLocal } from "../environment.ts";
+import { isLocal } from "../../shared/environment.ts";
 import { MockApi, RealApi } from "./api/api.ts";
 
 const api = isLocal() ? MockApi : RealApi;
@@ -41,7 +41,7 @@ export class HelloWorld extends LitElement {
 
     // function renderLabel(s: string) { return  html`<li>${s}</li>`; }
 
-    // function renderNested(obj: any) { 
+    // function renderNested(obj: any) {
     //   return html`
     //     <ul>
     //       ${Object.keys(obj).map(x =>[renderOne(x), renderOne(obj[x]) ])}

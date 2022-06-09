@@ -1,6 +1,6 @@
 import { config as Hello } from "../hello/config.ts";
 import { config as Bonjour } from "../bonjour/config.ts";
-import { toString } from '../helpers.ts';
+import { toString } from '../../shared/helpers.ts';
 import { join, fromFileUrl } from "https://deno.land/std/path/mod.ts";
 
 const sections = [Hello, Bonjour];

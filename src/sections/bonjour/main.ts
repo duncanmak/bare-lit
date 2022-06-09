@@ -1,4 +1,4 @@
-import { isLocal } from '../environment.ts';
+import { isLocal } from '../../shared/environment.ts';
 import { MockApi, RealApi } from './api/api.ts';
 const api = isLocal() ? MockApi : RealApi;
 

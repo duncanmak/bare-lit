@@ -1,7 +1,7 @@
 import { join, fromFileUrl } from "https://deno.land/std/path/mod.ts";
-import { toString } from './helpers.ts';
+import { toString } from './shared/helpers.ts';
 
-const configTs = `./${Deno.args[0]}/config.ts`
+const configTs = `./sections/${Deno.args[0]}/config.ts`
 const { config } = await import(configTs);
 
 const routes = [
