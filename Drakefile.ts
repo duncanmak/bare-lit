@@ -28,7 +28,7 @@ function installSection(section: string, filename: string) {
 }
 
 async function buildAppJs(section: string = 'shell') {
-  if (section) execute(`./src/sections/${section}/config.ts`);
+  await execute(`./src/sections/${section}/config.ts`);
   await sh(`deno run --allow-net --allow-read --allow-write ./src/generate-app.ts ${section}`);
   await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
 }
@@ -55,7 +55,7 @@ task(
 for (const section of SECTIONS) {
   desc(`Build ${section}`);
   task(`build-${section}`, ['./build', `./build/${section}.bundle.js`]);
-  task(`src/sections/${section}/config.ts`, []);
+  task(`./src/sections/${section}/config.ts`, []);
 
   task(
     `./build/${section}.bundle.js`,
