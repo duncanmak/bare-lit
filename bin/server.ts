@@ -4,18 +4,20 @@ import { join, parse } from "https://deno.land/std@0.141.0/path/mod.ts";
 
 const _ = (s: string) => join(Deno.cwd(), s);
 
-serve((req) => {
-  const pathname = parse(new URL(req.url).pathname);
-  const indexHtml = serveFile(req, _("build/index.html"));
+export function runServer() {
+  serve((req) => {
+    const pathname = parse(new URL(req.url).pathname);
+    const indexHtml = serveFile(req, _("build/index.html"));
 
-  console.log(pathname);
-  if (pathname.base === "") return indexHtml;
+    console.log(pathname);
+    if (pathname.base === "") return indexHtml;
 
-  try {
-    return pathname.ext !== ""
-      ? serveFile(req, _(`build/${pathname.base}`))
-      : indexHtml;
-  } catch {
-    return indexHtml;
-  }
-});
+    try {
+      return pathname.ext !== ""
+        ? serveFile(req, _(`build/${pathname.base}`))
+        : indexHtml;
+    } catch {
+      return indexHtml;
+    }
+  });
+}

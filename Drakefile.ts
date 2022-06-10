@@ -8,23 +8,23 @@ import {
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
 import { copy, emptyDir, ensureDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
+import { runServer } from './bin/server.ts';
 
 const SECTIONS = [...Deno.readDirSync("./src/sections")].reduce(
   (acc: string[], i) => i.isDirectory ? [i.name, ...acc] : acc, []);
 
-async function runServer() {
-  await sh("deno run --allow-net --allow-read ./bin/server.ts");
-}
-
 function installSection(section: string, filename: string) {
-  if (filename === "./build/index.html")
-    return updateFile(
+  if (filename === "./build/index.html") {
+    const changed = updateFile(
       filename,
       /\.\/shell.bundle.js/,
       `./${section}.bundle.js`
     );
-  else
+    if (changed)
+      console.log(`Loading ${section} in ${filename}`);
+  } else {
     console.log(`Don't know how to install ${section} in ${filename}`);
+  }
 }
 
 async function extractImportMap() {
@@ -41,7 +41,8 @@ async function extractImportMap() {
 
 async function buildAppJs(section: string = 'shell') {
   await execute(`./src/sections/${section}/config.ts`);
-  await sh(`deno run --allow-net --allow-read --allow-write ./src/generate-app.ts ${section}`);
+  const { run } = await import('./src/generate-app.ts');
+  await run(section);
   await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
 }
 
@@ -85,13 +86,9 @@ for (const section of SECTIONS) {
     `serve-${section}`,
     [`build-${section}`, "./build/index.html", "copy-assets"],
     async () => {
-      console.log(
-        "Replacing index.html",
-        await installSection(section, "./build/index.html")
-      );
-
+      await installSection(section, "./build/index.html");
       await buildAppJs(section);
-      await runServer();
+      runServer();
     }
   );
 }
@@ -99,7 +96,8 @@ for (const section of SECTIONS) {
 var t = task("./src/sections/shell/config.ts");
 t.prereqs = ['./src/sections/shell/generate-config.ts'];
 t.action = async () => {
-  await sh("deno run --allow-net --allow-read --allow-write ./src/sections/shell/generate-config.ts");
+  const { run } = await import("./src/sections/shell/generate-config.ts");
+  await run();
 };
 
 task("./build/index.html", ["./src/index.html", "./build"], async () =>
