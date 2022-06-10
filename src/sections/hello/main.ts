@@ -10,7 +10,6 @@ await import("time-elements");
 
 const { router } = await import('./' + 'app.js');
 
-
 @customElement("hello-world")
 export class HelloWorld extends LitElement {
 

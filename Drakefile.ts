@@ -3,15 +3,12 @@ import {
   execute,
   glob,
   run,
-  sh,
   task,
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
 import { copy, emptyDir, ensureDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
 import { bundle } from "https://deno.land/x/emit@0.2.0/mod.ts";
 import { runServer } from './bin/server.ts';
-
-const ATLAS_VERSION = '3.15.1';
 
 const SECTIONS = [...Deno.readDirSync("./src/sections")].reduce(
   (acc: string[], i) => i.isDirectory ? [i.name, ...acc] : acc, []);
@@ -55,7 +52,7 @@ task("clean", [], async () => {
   await emptyDir("build");
   try {
     await Deno.remove("./src/app.tmp.ts");
-    await Deno.remove("./src/section/shell/config.ts");
+    await Deno.remove("./src/sections/shell/config.ts");
   } catch {}
 });
 
@@ -111,27 +108,12 @@ task("copy-assets", ['./build'], async () =>
   await copy(`./src/assets/`, "./build/", { overwrite: true })
 );
 
-task('./build', ['./src/import-map.json'], async () => { await ensureDir('./build') })
+task('./build', [], async () => { await ensureDir('./build') })
 
 task('refresh-import-map', [], extractImportMap);
 
 desc("Serve the app");
 task("serve", ["build-sections", "serve-shell"]);
-
-desc("Updates the main styles with a new copy from the atlas-css file");
-task("update-atlas", [], async () => {
-  const styles = await fetch("https://unpkg.com/@microsoft/atlas-css@${ATLAS_VERSION}/dist/index.css");
-  updateFile(
-    './src/shared/styles/atlas.ts',
-    /export const styles = css`*`;/,
-    `export const styles = css\`${styles}\``
-  );
-  updateFile(
-    './src/shared/styles/atlas.ts',
-    /\/atlas-css@*\//,
-    `/atlas-css@${ATLAS_VERSION}/`
-  )
-});
 
 await run();
 
