@@ -104,9 +104,10 @@ task("./build/index.html", ["./src/index.html", "./build"], async () =>
   await copy(`./src/index.html`, "./build/index.html", { overwrite: true })
 );
 
-task("copy-assets", ['./build'], async () =>
-  await copy(`./src/assets/`, "./build/", { overwrite: true })
-);
+task("copy-assets", ['./build'], async () => {
+  await ensureDir("./build/assets");
+  await copy(`./src/assets/`, "./build/assets/", { overwrite: true })
+});
 
 task('./build', [], async () => { await ensureDir('./build') })
 

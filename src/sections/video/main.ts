@@ -74,8 +74,8 @@ export class VideoList extends LitElement {
         <article class="media-card position-relative box-shadow-medium" data-bi-name="card">
           <figure class="media-card-image ">
             ${when(!!entry.publishTime,
-              () => html`<img src="/published.png" alt="Published" />`,
-              () => html`<img src="/unpublished.png" alt="Unpublished" />`
+              () => html`<img src="/assets/published.png" alt="Published" />`,
+              () => html`<img src="/assets/unpublished.png" alt="Unpublished" />`
             )}
           </figure>
           <div class="media-card-content padding-xxs display-flex flex-direction-column justify-content-space-between">
