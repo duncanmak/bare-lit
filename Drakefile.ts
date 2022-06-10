@@ -27,6 +27,18 @@ function installSection(section: string, filename: string) {
     console.log(`Don't know how to install ${section} in ${filename}`);
 }
 
+async function extractImportMap() {
+  const indexHtml = await Deno.readTextFile('./src/index.html');
+
+  const begin = indexHtml.indexOf(`<script type="importmap">`);
+  const start = indexHtml.indexOf('{', begin);
+  const end = indexHtml.indexOf('</script>', start);
+
+  // make sure that it's valid JSON
+  const importMap = JSON.parse(indexHtml.substring(start, end));
+  await Deno.writeTextFile("./src/import-map.json", JSON.stringify(importMap, null, 2));
+}
+
 async function buildAppJs(section: string = 'shell') {
   await execute(`./src/sections/${section}/config.ts`);
   await sh(`deno run --allow-net --allow-read --allow-write ./src/generate-app.ts ${section}`);
@@ -98,7 +110,8 @@ task("copy-assets", ['./build'], async () =>
   await copy(`./src/assets/`, "./build/", { overwrite: true })
 );
 
-task('./build', [], async () => { await ensureDir('./build') })
+task('./build', ['./src/import-map.json'], async () => { await ensureDir('./build') })
+task('./src/import-map.json', ['./src/index.html'], extractImportMap);
 
 desc("Serve the app");
 task("serve", ["build-sections", "serve-shell"]);

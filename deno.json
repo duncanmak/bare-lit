@@ -8,5 +8,7 @@
   "tasks": {
       "drake": "deno run --unstable -A ./Drakefile.ts",
       "test": "npx playwright test"
-  }
+  },
+
+  "importMap": "./src/import-map.json"
 }

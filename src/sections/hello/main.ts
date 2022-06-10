@@ -1,16 +1,12 @@
-//@deno-types="https://unpkg.com/@vaadin/router@1.7.4/interfaces.d.ts"
-// import { RouterLocation } from "https://cdn.skypack.dev/@vaadin/router";
 import { isLocal } from "../../shared/environment.ts";
 import { MockApi, RealApi } from "./api/api.ts";
 
 const api = isLocal() ? MockApi : RealApi;
 
-const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
-const { customElement } = await import(
-  "https://cdn.skypack.dev/lit/decorators/custom-element.js"
-);
+const { LitElement, html } = await import("lit");
+const { customElement } = await import("lit/decorators/custom-element.js?dts");
 
-await import("https://unpkg.com/@github/time-elements@latest?module");
+await import("time-elements");
 
 const { router } = await import('./' + 'app.js');
 

@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>Bare Lit</title>
-        <link rel="icon" type="image/x-icon" href="/favicon.ico">
-        <script type="module" src="./app.js"></script>
-        <!-- NOTE: may be replaced by Drakefile -->
-        <script type="module" src="./shell.bundle.js"></script>
-    </head>
-    <body>
-        <h1>Demo</h1>
-        <div id="outlet"></div>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Bare Lit</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <script type="importmap">
+      {
+          "imports": {
+            "lit": "https://cdn.skypack.dev/lit?dts",
+            "lit/": "https://cdn.skypack.dev/lit/",
+            "time-elements": "https://unpkg.com/@github/time-elements@3.1.2/dist/index.js?module"
+          }
+      }
+    </script>
+    <script type="module" src="./app.js"></script>
+    <!-- NOTE: may be replaced by Drakefile -->
+    <script type="module" src="./shell.bundle.js"></script>
+  </head>
+
+  <body>
+    <h1>Demo</h1>
+    <div id="outlet"></div>
+  </body>
 </html>

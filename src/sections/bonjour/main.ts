@@ -2,10 +2,8 @@ import { isLocal } from '../../shared/environment.ts';
 import { MockApi, RealApi } from './api/api.ts';
 const api = isLocal() ? MockApi : RealApi;
 
-const { LitElement, html } = await import("https://cdn.skypack.dev/lit?dts");
-const { customElement } = await import(
-  "https://cdn.skypack.dev/lit/decorators/custom-element.js"
-);
+const { LitElement, html } = await import("lit");
+const { customElement } = await import("lit/decorators/custom-element.js?dts");
 
 @customElement("bonjour-monde")
 export class BonjourMonde extends LitElement {
