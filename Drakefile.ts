@@ -8,6 +8,7 @@ import {
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
 import { copy, emptyDir, ensureDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
+import { bundle } from "https://deno.land/x/emit@0.2.0/mod.ts";
 import { runServer } from './bin/server.ts';
 
 const SECTIONS = [...Deno.readDirSync("./src/sections")].reduce(
@@ -43,7 +44,8 @@ async function buildAppJs(section: string = 'shell') {
   await execute(`./src/sections/${section}/config.ts`);
   const { run } = await import('./src/generate-app.ts');
   await run(section);
-  await sh(`deno bundle ./src/app.tmp.ts ./build/app.js`);
+  const { code } = await bundle('./src/app.tmp.ts');
+  await Deno.writeTextFile('./build/app.js', code);
 }
 
 desc("Clean build output");
@@ -75,9 +77,8 @@ for (const section of SECTIONS) {
     glob(`./src/sections/${section}/*.ts`),
     async () => {
       await execute(`./src/sections/${section}/config.ts`);
-      await sh(
-        `deno bundle ./src/sections/${section}/main.ts ./build/${section}.bundle.js`
-      );
+      const { code } = await bundle(`./src/sections/${section}/main.ts`);
+      await Deno.writeTextFile(`./build/${section}.bundle.js`, code);
     }
   );
 
