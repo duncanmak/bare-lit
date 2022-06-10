@@ -7,7 +7,7 @@ import {
   task,
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
-import { copy, emptyDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
+import { copy, emptyDir, ensureDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
 
 const SECTIONS = [...Deno.readDirSync("./src/sections")].reduce(
   (acc: string[], i) => i.isDirectory ? [i.name, ...acc] : acc, []);
@@ -54,7 +54,7 @@ task(
 
 for (const section of SECTIONS) {
   desc(`Build ${section}`);
-  task(`build-${section}`, [`./build/${section}.bundle.js`]);
+  task(`build-${section}`, ['./build', `./build/${section}.bundle.js`]);
   task(`src/sections/${section}/config.ts`, []);
 
   task(
@@ -71,7 +71,7 @@ for (const section of SECTIONS) {
   desc(`Serve ${section}`);
   task(
     `serve-${section}`,
-    [`build-${section}`, "./build/index.html", "build-assets"],
+    [`build-${section}`, "./build/index.html", "copy-assets"],
     async () => {
       console.log(
         "Replacing index.html",
@@ -90,13 +90,15 @@ t.action = async () => {
   await sh("deno run --allow-net --allow-read --allow-write ./src/sections/shell/generate-config.ts");
 };
 
-task("./build/index.html", ["./src/index.html"], async () =>
+task("./build/index.html", ["./src/index.html", "./build"], async () =>
   await copy(`./src/index.html`, "./build/index.html", { overwrite: true })
 );
 
-task("build-assets", [], async () =>
+task("copy-assets", ['./build'], async () =>
   await copy(`./src/assets/`, "./build/", { overwrite: true })
 );
+
+task('./build', [], async () => { await ensureDir('./build') })
 
 desc("Serve the app");
 task("serve", ["build-sections", "serve-shell"]);
