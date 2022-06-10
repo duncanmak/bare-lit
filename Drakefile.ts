@@ -23,12 +23,6 @@ function installSection(section: string, filename: string) {
       /\.\/shell.bundle.js/,
       `./${section}.bundle.js`
     );
-  else if (filename === "./src/app.tmp.ts")
-    return updateFile(
-      filename,
-      /import { config } from "\.\/sections\/\w+\/config.ts"/,
-      `import { config } from "./sections/${section}/config.ts"`
-    );
   else
     console.log(`Don't know how to install ${section} in ${filename}`);
 }
