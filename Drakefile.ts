@@ -110,7 +110,8 @@ task("copy-assets", ['./build'], async () =>
 );
 
 task('./build', ['./src/import-map.json'], async () => { await ensureDir('./build') })
-task('./src/import-map.json', ['./src/index.html'], extractImportMap);
+
+task('refresh-import-map', [], extractImportMap);
 
 desc("Serve the app");
 task("serve", ["build-sections", "serve-shell"]);
