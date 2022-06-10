@@ -12,3 +12,7 @@
 - [ ] Test running the components individually
 - [ ] Authenticated routes to support user roles
 - [ ] Look into nesting routes. (Move route registration into the child components themselves)
+- [ ] Look into how the router and webserver interact
+-     currently serving index.html over and over
+- [ ] Tree shaking the CSS
+-     Server-side rendering?

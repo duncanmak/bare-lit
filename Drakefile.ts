@@ -3,7 +3,6 @@ import {
   execute,
   glob,
   run,
-  sh,
   task,
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
@@ -53,7 +52,7 @@ task("clean", [], async () => {
   await emptyDir("build");
   try {
     await Deno.remove("./src/app.tmp.ts");
-    await Deno.remove("./src/section/shell/config.ts");
+    await Deno.remove("./src/sections/shell/config.ts");
   } catch {}
 });
 
@@ -109,7 +108,7 @@ task("copy-assets", ['./build'], async () =>
   await copy(`./src/assets/`, "./build/", { overwrite: true })
 );
 
-task('./build', ['./src/import-map.json'], async () => { await ensureDir('./build') })
+task('./build', [], async () => { await ensureDir('./build') })
 
 task('refresh-import-map', [], extractImportMap);
 
