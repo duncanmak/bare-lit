@@ -9,6 +9,8 @@ import {
 import { copy, emptyDir, ensureDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
 import { bundle } from "https://deno.land/x/emit@0.2.0/mod.ts";
 import { runServer } from './bin/server.ts';
+import { debounce } from "https://deno.land/std/async/mod.ts";
+
 
 const SECTIONS = [...Deno.readDirSync("./src/sections")].reduce(
   (acc: string[], i) => i.isDirectory ? [i.name, ...acc] : acc, []);
@@ -115,6 +117,18 @@ task('refresh-import-map', [], extractImportMap);
 
 desc("Serve the app");
 task("serve", ["build-sections", "serve-shell"]);
+
+desc("go go go!")
+task("go", ["serve"], async () => {
+  for await (const event of Deno.watchFs("./src")) {
+    console.log(event);
+    if (event.paths.filter(p => !p.includes('tmp')).length == 0)
+      continue;
+    else {
+      await execute('build');
+    }
+  }
+});
 
 await run();
 

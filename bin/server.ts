@@ -5,7 +5,7 @@ import { join, parse } from "https://deno.land/std@0.141.0/path/mod.ts";
 const _ = (...s: string[]) => join(Deno.cwd(), ...s);
 
 export function runServer() {
-  serve((req) => {
+  return serve((req) => {
     const pathname = parse(new URL(req.url).pathname);
     const indexHtml = serveFile(req, _("build", "index.html"));
 

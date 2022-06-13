@@ -16,7 +16,7 @@ class Shell extends LitElement {
   render() {
     return html`
     <link rel="stylesheet" href="https://unpkg.com/@microsoft/atlas-css@3.16.0/dist/index.css">
-    <h1 class="font-size-h1">Shell</h1>
+    <h1 class="font-size-h1">Shell 2</h1>
       <ol class="breadcrumbs">
         ${map(names, name => html`<li class="breadcrumbs-item"><a href="/${name}" class="${name}">${name}</a></li>`)}
       </ol>`;
