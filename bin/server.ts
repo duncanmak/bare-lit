@@ -10,7 +10,7 @@ export function runServer() {
     const indexHtml = serveFile(req, _("build", "index.html"));
 
     console.log(pathname);
-    
+
     if (pathname.base === "") return indexHtml;
 
     try {

@@ -11,7 +11,7 @@ const config = {
   component: "shell-component",
   routes: sections.map(({ component, name, routes }) => {
     const action = new Function(
-      `return async () => await import("./" + "${name}.bundle.js")`,
+      `return async () => await import("/" + "${name}.bundle.js")`,
     )();
     return {
       path: `/${name}`,
