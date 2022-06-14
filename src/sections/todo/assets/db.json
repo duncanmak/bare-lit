@@ -1,0 +1,4 @@
+[
+    {"id": 1, "isCompleted": false, "text": "This is an example"},
+    {"id": 2, "isCompleted": true, "text": "This is an example that is completed"}
+]

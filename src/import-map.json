@@ -2,6 +2,7 @@
   "imports": {
     "lit": "https://cdn.skypack.dev/lit?dts",
     "lit/": "https://cdn.skypack.dev/lit/",
-    "time-elements": "https://unpkg.com/@github/time-elements@3.1.2/dist/index.js?module"
+    "time-elements": "https://unpkg.com/@github/time-elements@3.1.2/dist/index.js?module",
+    "lowdb": "https://cdn.skypack.dev/lowdb?dts"
   }
 }
