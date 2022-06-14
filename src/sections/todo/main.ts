@@ -2,6 +2,10 @@ const { LitElement, html } = await import("lit");
 const { customElement } = await import("lit/decorators/custom-element.js?dts");
 const { map } = await import("lit/directives/map.js?dts");
 
+const { fastCheckbox, provideFASTDesignSystem } = await import(
+  "https://cdn.jsdelivr.net/npm/@microsoft/fast-components@2.16.0/dist/fast-components.min.js"
+);
+
 import { Api, TodoApi } from "./api/api.ts";
 import { Todo } from "./api/model.ts";
 
@@ -33,21 +37,21 @@ export class TodoApp extends LitElement {
 
   render() {
     return html`
-            ${
+    <p>
+      ${
       map(this.items, ({ id, isCompleted, text }) =>
-      {
-        // console.log({id, isCompleted, text});
-        return html`<todo-view todoId=${id} isCompleted=${isCompleted} text=${text}>`
-      })}
-          <todo-editor>Sample text</todo-editor>
-        `;
+        html`<todo-view todoId=${id} isCompleted=${isCompleted} text=${text}>`)
+    }
+    </p>
+        <todo-editor>Sample text</todo-editor>
+    `;
   }
 }
 
 @customElement("todo-view")
 export class TodoView extends LitElement {
   static properties = {
-    isCompleted: { },
+    isCompleted: {},
     todoId: { type: Number },
     text: { type: String },
   };
@@ -56,15 +60,24 @@ export class TodoView extends LitElement {
   declare todoId: number;
   declare text: string;
 
-  onClick() {
+  connectedCallback() {
+    super.connectedCallback();
+
+    provideFASTDesignSystem()
+      .register(
+        fastCheckbox(),
+      );
+  }
+
+  onClick(evt: Event) {
+    console.log(evt);
     this.isCompleted = !this.isCompleted;
   }
 
   render() {
-    console.log(`${this.todoId} - ${this.isCompleted}`);
     return html`
       <p>${this.text}</p>
-      <p id=${this.todoId} @click=${this.onClick}>${this.isCompleted}</p>
+      <fast-checkbox @change=${this.onClick} .checked=${this.isCompleted}>
     `;
   }
 }
