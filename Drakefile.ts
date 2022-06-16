@@ -75,7 +75,7 @@ for (const section of SECTIONS) {
 
   task(
     `./build/${section}.bundle.js`,
-    glob(`${my}/*.ts`),
+    glob(`${my}/**/*.ts`),
     async () => {
       await execute(`${my}/config.ts`);
       const { code } = await bundle(`${my}/main.ts`);
@@ -101,7 +101,7 @@ for (const section of SECTIONS) {
     async () => {
       await installSection(section, "./build/index.html");
       await buildAppJs(section);
-      runServer();
+      await runServer();
     }
   );
 }
