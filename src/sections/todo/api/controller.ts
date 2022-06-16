@@ -1,10 +1,10 @@
 import type { ReactiveControllerHost, ReactiveController } from "lit";
-
 import { TodoApi, Todo } from './api.ts';
 
 export class ApiController implements ReactiveController, TodoApi {
   host: ReactiveControllerHost;
   entries?: Todo[];
+  count = 0;
 
   constructor(host: ReactiveControllerHost) {
     (this.host = host).addController(this);
@@ -16,8 +16,6 @@ export class ApiController implements ReactiveController, TodoApi {
       this.host.requestUpdate();
     });
   }
-
-  count = 0;
 
   async listEntries(): Promise<Todo[]> {
     if (!this.entries) {
@@ -31,17 +29,17 @@ export class ApiController implements ReactiveController, TodoApi {
 
   async updateEntry(id: number, entry: Partial<Todo>) {
     console.log('Updating', id, 'to', entry);
+    if (id == -1)
+      id = this.count+1;
+
     const item = this.entries!.find(i => i.id == id);
-    if (!item) return false;
+    if (item) {
+      Object.assign(item, entry);
+    } else {
+      this.entries!.push({ id, isCompleted: false, text: '', ...entry });
+      this.count++;
+    }
 
-    Object.assign(item, entry);
     this.host.requestUpdate();
-    return true;
-  }
-
-  async addEntry(text: string) {
-    this.entries!.push({id: this.count++, isCompleted: false, text});
-    this.host.requestUpdate();
-    return this.count;
   }
 }
