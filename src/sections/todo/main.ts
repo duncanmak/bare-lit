@@ -4,7 +4,6 @@ import { ApiController } from "./api/controller.ts";
 const { LitElement, html } = await import("lit");
 const { customElement } = await import("lit/decorators/custom-element.js?dts");
 const { repeat } = await import("lit/directives/repeat.js?dts");
-const { when } = await import("lit/directives/when.js?dts");
 
 // <todo-app>
 //   <todo-view todo-id="1" text="..." is-completed=true>
@@ -18,15 +17,15 @@ export class TodoApp extends LitElement {
 
   onUpdate = (evt: CustomEvent) => {
     this.api.updateEntry(evt.detail.todoId, evt.detail);
-  }
+  };
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('todo:update', this.onUpdate);
+    this.addEventListener("todo:update", this.onUpdate);
   }
 
   disconnectedCallback() {
-    this.removeEventListener('todo:update', this.onUpdate);
+    this.removeEventListener("todo:update", this.onUpdate);
     super.disconnectedCallback();
   }
 
@@ -35,11 +34,12 @@ export class TodoApp extends LitElement {
       <h1>My TODOs</h1>
 
       ${
-      repeat(this.api.entries ?? [], (e) => e.id, ({ id, isCompleted, text }) =>
+      repeat(this.api.entries ?? [], ({ id }) =>
+        id, ({ id, isCompleted, text }) =>
         html
           `<todo-view todo_id=${id} ?is_completed=${isCompleted} text=${text}>`)
     }
-    <todo-view is_editing text="Add new entry" todo_id="-1"}>
+    <todo-view text="Add new entry" todo_id="-1" ?is_editing=${true}}>
     `;
   }
 }
@@ -47,9 +47,9 @@ export class TodoApp extends LitElement {
 @customElement("todo-view")
 export class TodoView extends LitElement {
   static properties = {
-    is_completed: { type: Boolean, default: false  },
+    is_completed: { type: Boolean },
     todo_id: { type: Number },
-    text: { type: String },
+    text: {},
     is_editing: { type: Boolean },
   };
   declare is_completed: boolean;
@@ -59,47 +59,51 @@ export class TodoView extends LitElement {
 
   emitUpdate(todoId?: number, isCompleted?: boolean, text?: string) {
     const detail = { todoId, isCompleted, text };
-    console.log('emit', detail);
-
     this.dispatchEvent(
       new CustomEvent("todo:update", {
         bubbles: true,
         composed: true,
         detail,
-      }));
-      this.is_editing = false;
+      }),
+    );
   }
 
   onClick(evt: Event) {
     const { todo_id, is_completed, text } = this;
     this.emitUpdate(todo_id, !is_completed, text);
-
   }
 
   onSubmit(evt: Event) {
     evt.preventDefault();
     console.log(evt);
     const { todo_id, is_completed } = this;
-    const input = this.shadowRoot!.querySelector<HTMLInputElement>(`#todo-${todo_id}`)!;
+    const input = this.shadowRoot!.querySelector<HTMLInputElement>(
+      `#todo-${todo_id}`,
+    )!;
     this.emitUpdate(todo_id, is_completed, input.value);
-    this.is_editing = false;
+    if (todo_id == -1) {
+      input.value = "Add new entry";
+    } else {
+      this.is_editing = false;
+    }
   }
 
   render() {
-    const label = () =>
-      html`<p @click=${() => this.is_editing = true}>${this.text}</p>`;
-    const edit = () =>
-      html`
+    if (this.is_editing) {
+      const editor = html`
       <p>
         <form id="form" @submit=${this.onSubmit}>
-          <input id="todo-${this.todo_id}" type="text" value="${this.text}">
+          <input autocomplete="off" id="todo-${this.todo_id}" type="text" value="${this.text}">
         </form>
       </p>`;
-    return html`
-      <p>${this.todo_id}</p>
-      ${when(this.is_editing, edit, label)}
+      return editor;
+    } else {
+      const label = html`
+      <p @click=${() => this.is_editing = true}>${this.text}</p>
       <input type="checkbox" @change=${this.onClick} ?checked=${this.is_completed}>
-    `;
+      `;
+      return label;
+    }
   }
 }
 
@@ -109,6 +113,6 @@ declare global {
   }
 
   interface HTMLElementEventMap {
-    "todo:update": CustomEvent<Todo>
+    "todo:update": CustomEvent<Todo>;
   }
 }
