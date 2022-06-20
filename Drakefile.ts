@@ -70,7 +70,7 @@ for (const section of SECTIONS) {
   const my = `./src/sections/${section}`;
 
   desc(`Build ${section}`);
-  task(`build-${section}`, ['./build', `./build/${section}.bundle.js`]);
+  task(`build-${section}`, ['./build', `./build/${section}.bundle.js`, `copy-${section}-assets`]);
   task(`${my}/config.ts`, []);
 
   task(
@@ -97,7 +97,7 @@ for (const section of SECTIONS) {
   desc(`Serve ${section}`);
   task(
     `serve-${section}`,
-    [`build-${section}`, "./build/index.html", "copy-assets", `copy-${section}-assets`],
+    [`build-${section}`, "./build/index.html", "copy-assets"],
     async () => {
       await installSection(section, "./build/index.html");
       await buildAppJs(section);

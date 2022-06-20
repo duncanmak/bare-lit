@@ -1,12 +1,13 @@
 import { type Ref } from "lit/directives/ref.js?dts";
 import { isLocal } from '../../shared/environment.ts';
 import { Page, VideoEntry } from "./api/model.ts";
-import { MockApi, RealApi } from './api/api.ts';
-const api = isLocal() ? MockApi : RealApi;
+import { MockController, RealController } from './api/controller.ts'
+import { styles } from "./assets/styles.ts";
 
-const { router } = await import('./' + 'app.js');
+const API = isLocal() ? MockController : RealController;
 
-const { LitElement, html, css } = await import("lit");
+// Lit Imports
+const { LitElement, html } = await import("lit");
 const { ref, createRef } = await import("lit/directives/ref.js?dts");
 const { customElement } = await import("lit/decorators/custom-element.js?dts");
 const { map } = await import("lit/directives/map.js?dts");
@@ -15,58 +16,47 @@ const { when } = await import("lit/directives/when.js?dts");
 @customElement("video-list")
 export class VideoList extends LitElement {
 
-  static styles = css`
-    .section {
-      max-width: 90%;
-      margin: auto;
-    }
-    .card-holder {
-      padding: 0.75rem;
-      width: 100%;
-    }
-    .media-card, .media-card-image, .media-card-image img {
-      width: 100%;
-    }
-    @media print, screen and (min-width: 768px) {
-      .card-holder {
-        width: 50%;
-      }
-    }
-    @media print, screen and (min-width: 1088px) {
-      .card-holder {
-        width: 33%;
-      }
-    }
-  `
-
-  constructor(){
-    super()
-    this.location = router.location;
-    this.entries = {
-      pageIndex: 0,
-      pageSize: 0,
-      items: [],
-      totalCount: 0
-    };
-    this.term = '';
-    this.input = createRef<HTMLInputElement>();
-  }
-
   // TODO: This is needed until
   // https://github.com/lit/lit-element/issues/1030 is resolved
   static properties = { entries: {}, term: {}, location: { type: Object } };
+  static styles = styles;
+  private api = new API(this);
+
   declare entries: Page<VideoEntry>;
-  declare term: string;
   declare input: Ref<HTMLInputElement>;
   declare location: any;
 
-  async connectedCallback() {
+  constructor(){
+    super()
+    this.input = createRef<HTMLInputElement>();
+  }
+
+  connectedCallback() {
     super.connectedCallback();
-    this.entries = await api.getEntries();
+    this.addEventListener("video-list:update-term", this.search);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener("video-list:update-term", this.search);
+    super.disconnectedCallback();
+  }
+
+  async search(evt: CustomEvent) {
+    await this.api.updateTerm(evt.detail);
+  }
+
+  emitSearch(detail: string) {
+    this.dispatchEvent(
+      new CustomEvent("video-list:update-term", {
+        bubbles: true,
+        composed: true,
+        detail,
+      }),
+    );
   }
 
   onChange() {
-    this.term = this.input.value?.value ?? '';
+    this.emitSearch(this.input.value?.value ?? '')
   }
 
   renderEntry(entry: VideoEntry) {
@@ -89,7 +79,8 @@ export class VideoList extends LitElement {
             </div>
             <p class="font-size-sm color-text-subtle margin-top-xs display-flex justify-content-space-between">
                 <span>${entry.createdBy?.name}</span>
-                <span>Created: ${new Date(entry.createTime!).toDateString()}</span>              </p>
+                <span>Created: ${new Date(entry.createTime!).toDateString()}</span>
+            </p>
           </div>
         </article>
       </li>
@@ -97,8 +88,7 @@ export class VideoList extends LitElement {
   }
 
   renderEntries() {
-    const entries = this.entries.items.filter((entry) => entry.title?.match(new RegExp(this.term, 'i')))
-    return html`${map(entries, this.renderEntry)}`;
+    return html`${map(this.api.page.items, this.renderEntry)}`;
   }
 
   render() {
@@ -106,11 +96,11 @@ export class VideoList extends LitElement {
     return html`
     <link rel="stylesheet" href="https://unpkg.com/@microsoft/atlas-css@3.16.0/dist/index.css">
       <div class="section">
-        <p>Available Videos (${this.entries.totalCount})</p>
+        <p>Available Videos (${this.api.page.totalCount})</p>
         <input ${ref(this.input)} class="input" id="input-demo" type="text" placeholder="Search by name or id"
-          @input="${this.onChange}" value="${this.term}"/>
+          @input="${this.onChange}" value="${this.api.term}"/>
         <ol class="list-style-none display-flex flex-wrap-wrap justify-content-space-between margin-top-xxs">
-          ${when(this.entries.items.length > 0,
+          ${when(this.api.page.items.length > 0,
             () => this.renderEntries(),
             () => html`<li>Empty List</li>`)}
         </ol>
@@ -122,5 +112,9 @@ export class VideoList extends LitElement {
 declare global {
   interface HTMLElementTagNameMap {
     "video-list": VideoList;
+  }
+
+  interface HTMLElementEventMap {
+    "video-list:update-term": CustomEvent<VideoEntry>;
   }
 }

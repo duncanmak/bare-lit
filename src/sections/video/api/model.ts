@@ -1,8 +1,8 @@
 // Copied code from docs-ui/packages\scripts\src\admin\video\model.ts
 
-export interface VideoEntry {
-	resourceId?: string;
+export class VideoEntry {
 	id: string;
+	resourceId?: string;
 	originalFileName?: string;
 	createdBy?: Owner;
 	updatedBy?: Owner;
@@ -61,6 +61,19 @@ export interface VideoEntry {
 	sourceVideoUploadUrl?: string;
 	requestCaptions?: boolean;
 	cancelCaptions?: boolean;
+
+	constructor() {
+		this.id = '';
+	}
+
+	static fromJson(data: any) {
+		return Object.assign(new VideoEntry, {
+			...data,
+			createTime: (data.createTime ? new Date(data.createTime) : ''),
+			updateTime: (data.createTime ? new Date(data.createTime) : ''),
+			publishTime: (data.createTime ? new Date(data.createTime) : null)
+		});
+	}
 }
 
 export interface Owner {
