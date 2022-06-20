@@ -8,11 +8,11 @@ import './video-card.ts';
 const API = isLocal() ? MockController : RealController;
 
 // Lit Imports
-const { LitElement, html } = await import('lit');
-const { ref, createRef } = await import('lit/directives/ref.js?dts');
-const { customElement } = await import('lit/decorators/custom-element.js?dts');
-const { map } = await import('lit/directives/map.js?dts');
-const { when } = await import('lit/directives/when.js?dts');
+const { LitElement, html } = await import("lit");
+const { ref, createRef } = await import("lit/directives/ref.js?dts");
+const { customElement } = await import("lit/decorators/custom-element.js?dts");
+const { map } = await import("lit/directives/map.js?dts");
+const { when } = await import("lit/directives/when.js?dts");
 
 @customElement('video-list')
 export class VideoList extends LitElement {
