@@ -6,7 +6,8 @@ import {
   task,
   updateFile,
 } from "https://deno.land/x/drake@v1.5.2/mod.ts";
-import { copy, emptyDir, ensureDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
+import { copy, emptyDir, expandGlobSync, ensureDir } from "https://deno.land/std@0.141.0/fs/mod.ts";
+import { parse } from "https://deno.land/std@0.141.0/path/mod.ts";
 import { bundle } from "https://deno.land/x/emit@0.2.0/mod.ts";
 import { runServer } from './bin/server.ts';
 
@@ -17,8 +18,8 @@ function installSection(section: string, filename: string) {
   if (filename === "./build/index.html") {
     const changed = updateFile(
       filename,
-      /\.\/shell.bundle.js/,
-      `./${section}.bundle.js`
+      /\/shell.bundle.js/,
+      `/${section}.bundle.js`
     );
     if (changed)
       console.log(`Loading ${section} in ${filename}`);
@@ -27,7 +28,7 @@ function installSection(section: string, filename: string) {
   }
 }
 
-async function extractImportMap() {
+async function refreshImportMap() {
   const indexHtml = await Deno.readTextFile('./src/index.html');
 
   const begin = indexHtml.indexOf(`<script type="importmap">`);
@@ -57,9 +58,7 @@ task("clean", [], async () => {
 });
 
 desc("Build everything");
-task("build", ["build-sections"], async () => {
-  await buildAppJs();
-});
+task("build", ["build-sections"], buildAppJs);
 
 task(
   "build-sections",
@@ -67,28 +66,42 @@ task(
 );
 
 for (const section of SECTIONS) {
+
+  const my = `./src/sections/${section}`;
+
   desc(`Build ${section}`);
   task(`build-${section}`, ['./build', `./build/${section}.bundle.js`]);
-  task(`./src/sections/${section}/config.ts`, []);
+  task(`${my}/config.ts`, []);
 
   task(
     `./build/${section}.bundle.js`,
-    glob(`./src/sections/${section}/*.ts`),
+    glob(`${my}/**/*.ts`),
     async () => {
-      await execute(`./src/sections/${section}/config.ts`);
-      const { code } = await bundle(`./src/sections/${section}/main.ts`);
+      await execute(`${my}/config.ts`);
+      const { code } = await bundle(`${my}/main.ts`);
       await Deno.writeTextFile(`./build/${section}.bundle.js`, code);
     }
   );
 
+  task(`copy-${section}-assets`, [], async () => {
+    const assets = [...expandGlobSync(`${my}/assets/*`)]
+
+    if (assets.length > 0)
+      await ensureDir(`./build/assets/${section}/`);
+    for (const f of assets) {
+      const path = parse(f.path);
+      await copy(f.path, `./build/assets/${section}/${path.base}`, {overwrite: true});
+    }
+  });
+
   desc(`Serve ${section}`);
   task(
     `serve-${section}`,
-    [`build-${section}`, "./build/index.html", "copy-assets"],
+    [`build-${section}`, "./build/index.html", "copy-assets", `copy-${section}-assets`],
     async () => {
       await installSection(section, "./build/index.html");
       await buildAppJs(section);
-      runServer();
+      await runServer();
     }
   );
 }
@@ -100,8 +113,8 @@ t.action = async () => {
   await run();
 };
 
-task("./build/index.html", ["./src/index.html", "./build"], async () =>
-  await copy(`./src/index.html`, "./build/index.html", { overwrite: true })
+task("./build/index.html", ["./src/index.html", "./build"], () =>
+  copy(`./src/index.html`, "./build/index.html", { overwrite: true })
 );
 
 task("copy-assets", ['./build'], async () => {
@@ -109,9 +122,9 @@ task("copy-assets", ['./build'], async () => {
   await copy(`./src/assets/`, "./build/assets/", { overwrite: true })
 });
 
-task('./build', [], async () => { await ensureDir('./build') })
+task('./build', [], () => ensureDir('./build'))
 
-task('refresh-import-map', [], extractImportMap);
+task('refresh-import-map', [], refreshImportMap);
 
 desc("Serve the app");
 task("serve", ["build-sections", "serve-shell"]);
