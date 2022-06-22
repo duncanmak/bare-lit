@@ -1,7 +1,7 @@
 import { config as Hello } from "../hello/config.ts";
 import { config as Bonjour } from "../bonjour/config.ts";
 import { config as Video } from "../video/config.ts";
-import { config as Todo } from '../todo/config.ts';
+import { config as Todo } from "../todo/config.ts";
 import { toString } from "../../shared/helpers.ts";
 import { fromFileUrl, join } from "https://deno.land/std/path/mod.ts";
 

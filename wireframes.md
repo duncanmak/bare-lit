@@ -33,7 +33,6 @@
 ## Video Edit
 
 ```html
-
 <video-edit-app entry="entry">
   <video-title-bar
     id="entry.id"

@@ -1,18 +1,22 @@
 # TODO
 
-- [ ] Look into how the router and server.ts interact
-      currently serving index.html over and over
+- [ ] Look into how the router and server.ts interact currently serving
+      index.html over and over
 - [ ] Tree shaking the CSS
 - [ ] Authenticated routes to support user roles
 - [ ] Server-side rendering?
-- [ ] Can we load the current LightDOM elements and slot them into the ShadowDOM?
-- [ ] Can we dynamically split atlas-css into exportable pieces of lit element css objects
+- [ ] Can we load the current LightDOM elements and slot them into the
+      ShadowDOM?
+- [ ] Can we dynamically split atlas-css into exportable pieces of lit element
+      css objects
 -
-- [ ] Use https://github.com/lit/lit/tree/main/packages/labs/router instead of Vaadin?
+- [ ] Use https://github.com/lit/lit/tree/main/packages/labs/router instead of
+      Vaadin?
 
 ## Later
 
-- [ ] Update to decorators once https://github.com/lit/lit-element/issues/1030 is resolved
+- [ ] Update to decorators once https://github.com/lit/lit-element/issues/1030
+      is resolved
 - [ ] Check out https://github.com/hironichu/denosass for Atlas SCSS processing
 
 ## Video Components

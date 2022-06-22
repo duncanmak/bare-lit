@@ -1,10 +1,10 @@
-import { Video } from './api/model.ts';
+import { Video } from "./api/model.ts";
 
-const { LitElement, html } = await import('lit');
-const { customElement } = await import('lit/decorators/custom-element.js?dts');
-const { when } = await import('lit/directives/when.js?dts');
+const { LitElement, html } = await import("lit");
+const { customElement } = await import("lit/decorators/custom-element.js?dts");
+const { when } = await import("lit/directives/when.js?dts");
 
-@customElement('video-card')
+@customElement("video-card")
 export class VideoCard extends LitElement {
   // TODO: This is needed until
   // https://github.com/lit/lit-element/issues/1030 is resolved
@@ -35,12 +35,13 @@ export class VideoCard extends LitElement {
           data-bi-name="card"
         >
           <figure class="media-card-image ">
-            ${when(
-              !!this.publish_time,
-              () => html`<img src="/assets/published.png" alt="Published" />`,
-              () =>
-                html`<img src="/assets/unpublished.png" alt="Unpublished" />`
-            )}
+            ${
+      when(
+        !!this.publish_time,
+        () => html`<img src="/assets/published.png" alt="Published" />`,
+        () => html`<img src="/assets/unpublished.png" alt="Unpublished" />`,
+      )
+    }
           </figure>
           <div
             class="media-card-content padding-xxs display-flex flex-direction-column justify-content-space-between"
@@ -71,6 +72,6 @@ export class VideoCard extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'video-card': VideoCard;
+    "video-card": VideoCard;
   }
 }

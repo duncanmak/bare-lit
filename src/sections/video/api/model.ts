@@ -52,27 +52,27 @@ export interface VideoJson {
 }
 
 export class Video implements VideoJson {
-  id = '';
-  resourceId = '';
-  originalFileName = '';
+  id = "";
+  resourceId = "";
+  originalFileName = "";
   createdBy = defaultOwner;
   updatedBy = defaultOwner;
   publishedBy = defaultOwner;
-  createTime: Date | string = '';
-  updateTime: Date | string = '';
+  createTime: Date | string = "";
+  updateTime: Date | string = "";
   publishTime: Date | string | null = null;
-  title = '';
-  description = '';
+  title = "";
+  description = "";
   tags: string[] = [];
-  captureAt = '';
+  captureAt = "";
   draftVideo? = undefined;
   publicVideo? = undefined;
   tempResources: TempResource[] = [];
-  externalVideoUrl = '';
-  youTubeUrl = '';
+  externalVideoUrl = "";
+  youTubeUrl = "";
   useInterestingFrameAsThumbnail = false;
   owners: Owner[] = [];
-  sourceVideoUploadUrl = '';
+  sourceVideoUploadUrl = "";
   requestCaptions = false;
   cancelCaptions = false;
 
@@ -81,7 +81,7 @@ export class Video implements VideoJson {
   }
 
   static displayTime(time: string | Date | null) {
-    if (time === null) return 'null';
+    if (time === null) return "null";
     if (time instanceof Date) return time.toDateString();
     else return new Date(time).toDateString();
   }
@@ -94,17 +94,17 @@ export interface Owner {
 }
 
 const defaultOwner = {
-  email: 'mail@default.com',
-  name: 'default',
-  id: 'default-owner',
+  email: "mail@default.com",
+  name: "default",
+  id: "default-owner",
 };
 
 export enum JobStatus {
-  processing = 'Processing',
-  finished = 'Finished',
-  scheduled = 'Scheduled',
-  default = 'Default',
-  systemError = 'SystemError',
+  processing = "Processing",
+  finished = "Finished",
+  scheduled = "Scheduled",
+  default = "Default",
+  systemError = "SystemError",
 }
 
 export interface TempResource {

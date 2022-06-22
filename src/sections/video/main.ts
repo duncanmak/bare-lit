@@ -1,9 +1,9 @@
-import { type Ref } from 'lit/directives/ref.js?dts';
-import { isLocal } from '../../shared/environment.ts';
-import { Page, Video } from './api/model.ts';
-import { MockController, RealController } from './api/controller.ts';
-import { styles } from './assets/styles.ts';
-import './video-card.ts';
+import { type Ref } from "lit/directives/ref.js?dts";
+import { isLocal } from "../../shared/environment.ts";
+import { Page, Video } from "./api/model.ts";
+import { MockController, RealController } from "./api/controller.ts";
+import { styles } from "./assets/styles.ts";
+import "./video-card.ts";
 
 const API = isLocal() ? MockController : RealController;
 
@@ -14,7 +14,7 @@ const { customElement } = await import("lit/decorators/custom-element.js?dts");
 const { map } = await import("lit/directives/map.js?dts");
 const { when } = await import("lit/directives/when.js?dts");
 
-@customElement('video-list')
+@customElement("video-list")
 export class VideoList extends LitElement {
   // TODO: This is needed until
   // https://github.com/lit/lit-element/issues/1030 is resolved
@@ -33,11 +33,11 @@ export class VideoList extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('video-list:update-term', this.search);
+    this.addEventListener("video-list:update-term", this.search);
   }
 
   disconnectedCallback() {
-    this.removeEventListener('video-list:update-term', this.search);
+    this.removeEventListener("video-list:update-term", this.search);
     super.disconnectedCallback();
   }
 
@@ -45,23 +45,24 @@ export class VideoList extends LitElement {
 
   emitSearch(detail: string) {
     this.dispatchEvent(
-      new CustomEvent('video-list:update-term', {
+      new CustomEvent("video-list:update-term", {
         bubbles: true,
         composed: true,
         detail,
-      })
+      }),
     );
   }
 
   onChange() {
-    this.emitSearch(this.input.value?.value ?? '');
+    this.emitSearch(this.input.value?.value ?? "");
   }
 
   renderEntries() {
-    return html`${map(this.api.page.items, (entry) => {
-      const { id, title, publishTime, updateTime, createTime, createdBy } =
-        entry;
-      return html`
+    return html`${
+      map(this.api.page.items, (entry) => {
+        const { id, title, publishTime, updateTime, createTime, createdBy } =
+          entry;
+        return html`
         <video-card
           id="${id}"
           title="${title}"
@@ -72,7 +73,8 @@ export class VideoList extends LitElement {
           class="video-card"
         ></video-card>
       `;
-    })}`;
+      })
+    }`;
   }
 
   render() {
@@ -95,11 +97,13 @@ export class VideoList extends LitElement {
         <ol
           class="card-container list-style-none display-flex flex-wrap-wrap justify-content-space-between margin-top-xxs"
         >
-          ${when(
-            this.api.page.items.length > 0,
-            () => this.renderEntries(),
-            () => html`<li>Empty List</li>`
-          )}
+          ${
+      when(
+        this.api.page.items.length > 0,
+        () => this.renderEntries(),
+        () => html`<li>Empty List</li>`,
+      )
+    }
         </ol>
       </div>
     `;
@@ -108,10 +112,10 @@ export class VideoList extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'video-list': VideoList;
+    "video-list": VideoList;
   }
 
   interface HTMLElementEventMap {
-    'video-list:update-term': CustomEvent<Video>;
+    "video-list:update-term": CustomEvent<Video>;
   }
 }

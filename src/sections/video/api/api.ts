@@ -1,4 +1,4 @@
-import { Page, Video } from './model.ts';
+import { Page, Video } from "./model.ts";
 
 export interface VideoApi {
   set term(value: string);
@@ -6,5 +6,5 @@ export interface VideoApi {
   listEntries(): Promise<Page<Video>>;
 }
 
-export type { Page } from './model.ts';
-export { Video } from './model.ts';
+export type { Page } from "./model.ts";
+export { Video } from "./model.ts";

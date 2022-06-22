@@ -1,6 +1,6 @@
-import type { ReactiveControllerHost, ReactiveController } from 'lit';
-import type { VideoJson } from './model.ts';
-import { VideoApi, Video, Page } from './api.ts';
+import type { ReactiveController, ReactiveControllerHost } from "lit";
+import type { VideoJson } from "./model.ts";
+import { Page, Video, VideoApi } from "./api.ts";
 
 export class MockController implements ReactiveController, VideoApi {
   page: Page<Video> = {
@@ -10,7 +10,7 @@ export class MockController implements ReactiveController, VideoApi {
     pageSize: 0,
   };
 
-  _term: string = '';
+  _term: string = "";
 
   get term() {
     return this._term;
@@ -36,20 +36,21 @@ export class MockController implements ReactiveController, VideoApi {
   }
 
   async listEntries(): Promise<Page<Video>> {
-    const res = await fetch('/assets/video/db.json');
+    const res = await fetch("/assets/video/db.json");
     const json = await (await res.json()).entries;
     const entries: Video[] = json.map((entry: VideoJson) =>
       Video.fromJson(entry)
     );
     return {
       items: entries.filter((entry) =>
-        entry.title?.match(new RegExp(this._term, 'i'))
+        entry.title?.match(new RegExp(this._term, "i"))
       ),
       pageIndex: 1,
       pageSize: 25,
-      totalCount: entries.filter((entry) =>
-        entry.title?.match(new RegExp(this._term, 'i'))
-      ).length,
+      totalCount:
+        entries.filter((entry) =>
+          entry.title?.match(new RegExp(this._term, "i"))
+        ).length,
     };
   }
 }
@@ -61,7 +62,7 @@ export class RealController implements ReactiveController, VideoApi {
     pageIndex: 0,
     pageSize: 0,
   };
-  term: string = '';
+  term: string = "";
 
   constructor(public host: ReactiveControllerHost) {
     host.addController(this);
@@ -84,6 +85,6 @@ export class RealController implements ReactiveController, VideoApi {
     //         _pageIndex + 1
     //     }&pageSize=${_pageSize}&scope=${role}&orderby=${orderby}&order=${order}`;
     // }
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }

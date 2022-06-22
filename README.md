@@ -2,7 +2,12 @@
 
 ## Helpful Links:
 
-[Deno Installation](https://deno.land/manual/getting_started/installation) | [Deno Docs](https://doc.deno.land/) | [Drake Docs](https://github.com/srackham/drake) | [Atlas Docs](https://design.docs.microsoft.com/atomics/lists.html) | [Playwright Docs](https://playwright.dev/docs/intro) | [Lit Docs](https://lit.dev/docs/) | [Open Web Components](https://open-wc.org/)
+[Deno Installation](https://deno.land/manual/getting_started/installation) |
+[Deno Docs](https://doc.deno.land/) |
+[Drake Docs](https://github.com/srackham/drake) |
+[Atlas Docs](https://design.docs.microsoft.com/atomics/lists.html) |
+[Playwright Docs](https://playwright.dev/docs/intro) |
+[Lit Docs](https://lit.dev/docs/) | [Open Web Components](https://open-wc.org/)
 
 ## Set-Up
 

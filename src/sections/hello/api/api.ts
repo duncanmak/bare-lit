@@ -1,6 +1,6 @@
 export interface HelloApi {
-    hello(): Promise<string>;
+  hello(): Promise<string>;
 }
 
-export { Api as RealApi } from './impl.ts';
-export { Api as MockApi } from './mock.ts';
+export { Api as RealApi } from "./impl.ts";
+export { Api as MockApi } from "./mock.ts";

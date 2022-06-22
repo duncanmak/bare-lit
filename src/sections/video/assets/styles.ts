@@ -1,4 +1,4 @@
-const { css } = await import('lit');
+const { css } = await import("lit");
 
 export const styles = css`
 .section {
@@ -23,4 +23,4 @@ export const styles = css`
     width: 33%;
   }
 }
-`
+`;

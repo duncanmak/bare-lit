@@ -14,7 +14,7 @@ export async function run(section: string) {
 
   await Deno.writeTextFile(
     join(fromFileUrl(import.meta.url), "../app.tmp.ts"),
-  `
+    `
   const { Router } = await import("https://cdn.skypack.dev/@vaadin/router");
   export const router = new Router(document.getElementById("outlet"));
 
