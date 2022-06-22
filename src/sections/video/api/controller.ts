@@ -43,7 +43,7 @@ export class MockController implements ReactiveController, VideoApi {
     );
     const items = entries.filter((entry) => entry.title?.match(new RegExp(this._term, "i")));
     return {
-      items: items,
+      items,
       pageIndex: 1,
       pageSize: 25,
       totalCount: items.length,
