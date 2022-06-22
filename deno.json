@@ -3,11 +3,11 @@
     "lib": ["dom", "esnext", "deno.ns"],
     "strict": true,
     "experimentalDecorators": true
-    },
+  },
 
   "tasks": {
-      "drake": "deno run --unstable -A ./Drakefile.ts",
-      "test": "npx playwright test"
+    "drake": "deno run --unstable -A ./Drakefile.ts",
+    "test": "npx playwright test"
   },
 
   "importMap": "./src/import-map.json"
