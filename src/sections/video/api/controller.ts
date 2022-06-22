@@ -41,16 +41,12 @@ export class MockController implements ReactiveController, VideoApi {
     const entries: Video[] = json.map((entry: VideoJson) =>
       Video.fromJson(entry)
     );
+    const items = entries.filter((entry) => entry.title?.match(new RegExp(this._term, "i")));
     return {
-      items: entries.filter((entry) =>
-        entry.title?.match(new RegExp(this._term, "i"))
-      ),
+      items: items,
       pageIndex: 1,
       pageSize: 25,
-      totalCount:
-        entries.filter((entry) =>
-          entry.title?.match(new RegExp(this._term, "i"))
-        ).length,
+      totalCount: items.length,
     };
   }
 }

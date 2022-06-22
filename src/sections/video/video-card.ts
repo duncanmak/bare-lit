@@ -37,7 +37,7 @@ export class VideoCard extends LitElement {
           <figure class="media-card-image ">
             ${
       when(
-        !!this.publish_time,
+        this.publish_time,
         () => html`<img src="/assets/published.png" alt="Published" />`,
         () => html`<img src="/assets/unpublished.png" alt="Unpublished" />`,
       )
