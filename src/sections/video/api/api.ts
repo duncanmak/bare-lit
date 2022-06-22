@@ -1,9 +1,10 @@
-import { Page, VideoEntry } from "./model.ts";
+import { Page, Video } from './model.ts';
 
 export interface VideoApi {
-    listEntries(): Promise<void>;
-    updateTerm(term: string): Promise<void>;
+  set term(value: string);
+  get term(): string;
+  listEntries(): Promise<Page<Video>>;
 }
 
 export type { Page } from './model.ts';
-export { VideoEntry } from './model.ts';
+export { Video } from './model.ts';

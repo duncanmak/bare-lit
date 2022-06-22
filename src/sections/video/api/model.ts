@@ -1,120 +1,137 @@
 // Copied code from docs-ui/packages\scripts\src\admin\video\model.ts
 
-export class VideoEntry {
-	id: string;
-	resourceId?: string;
-	originalFileName?: string;
-	createdBy?: Owner;
-	updatedBy?: Owner;
-	publishedBy?: Owner;
-	createTime?: Date;
-	updateTime?: Date;
-	publishTime?: Date;
-	title?: string;
-	description?: string;
-	tags?: string[];
-	captureAt?: string;
-	draftVideo?: {
-		highQualityVideoUrl?: string;
-		mediumQualityVideoUrl?: string;
-		lowQualityVideoUrl?: string;
-		adaptiveVideoUrl?: string;
-		audioUrl?: string;
-		captureAt?: string;
-		thumbnail?: ThumbnailProperties;
-		thumbnailOtherSizes?: {
-			additionalProp1: ThumbnailProperties;
-			additionalProp2: ThumbnailProperties;
-			additionalProp3: ThumbnailProperties;
-		};
-		detailedJobStatus?: {
-			videoJob: Job;
-			thumbnailJob: Job;
-			subPlyJob: Job;
-		};
-		captions?: Caption[];
-		job?: Partial<Job>;
-		durationInMillisecond?: number;
-		canceledFailedCaptions?: boolean;
-		captionAttempts?: number;
-	};
-	publicVideo?: {
-		highQualityVideoUrl: string;
-		mediumQualityVideoUrl: string;
-		lowQualityVideoUrl: string;
-		adaptiveVideoUrl: string;
-		audioUrl: string;
-		thumbnail: ThumbnailProperties;
-		thumbnailOtherSizes: {
-			additionalProp1: ThumbnailProperties;
-			additionalProp2: ThumbnailProperties;
-			additionalProp3: ThumbnailProperties;
-		};
-		captions: Caption[];
-		durationInMillisecond?: number;
-	};
-	tempResources?: TempResource[];
-	externalVideoUrl?: string;
-	youTubeUrl?: string;
-	useInterestingFrameAsThumbnail?: boolean;
-	owners?: Owner[];
-	sourceVideoUploadUrl?: string;
-	requestCaptions?: boolean;
-	cancelCaptions?: boolean;
+export interface PublicVideo {
+  highQualityVideoUrl: string;
+  mediumQualityVideoUrl: string;
+  lowQualityVideoUrl: string;
+  adaptiveVideoUrl: string;
+  audioUrl: string;
+  thumbnail: ThumbnailProperties;
+  thumbnailOtherSizes: {
+    additionalProp1: ThumbnailProperties;
+    additionalProp2: ThumbnailProperties;
+    additionalProp3: ThumbnailProperties;
+  };
+  captions: Caption[];
+  durationInMillisecond: number;
+}
 
-	constructor() {
-		this.id = '';
-	}
+export interface VideoJson {
+  id: string;
+  resourceId: string;
+  originalFileName: string;
+  createdBy: Owner;
+  updatedBy: Owner;
+  publishedBy: Owner;
+  createTime: Date | string;
+  updateTime: Date | string;
+  publishTime: Date | string | null;
+  title: string;
+  description: string;
+  tags: string[];
+  captureAt: string;
+  draftVideo?: PublicVideo & {
+    detailedJobStatus: {
+      videoJob: Job;
+      thumbnailJob: Job;
+      subPlyJob: Job;
+    };
+    job: Partial<Job>;
+    canceledFailedCaptions: boolean;
+    captionAttempts: number;
+  };
+  publicVideo?: PublicVideo;
+  tempResources: TempResource[];
+  externalVideoUrl: string;
+  youTubeUrl: string;
+  useInterestingFrameAsThumbnail: boolean;
+  owners: Owner[];
+  sourceVideoUploadUrl: string;
+  requestCaptions: boolean;
+  cancelCaptions: boolean;
+}
 
-	static fromJson(data: any) {
-		return Object.assign(new VideoEntry, {
-			...data,
-			createTime: (data.createTime ? new Date(data.createTime) : ''),
-			updateTime: (data.createTime ? new Date(data.createTime) : ''),
-			publishTime: (data.createTime ? new Date(data.createTime) : null)
-		});
-	}
+export class Video implements VideoJson {
+  id = '';
+  resourceId = '';
+  originalFileName = '';
+  createdBy = defaultOwner;
+  updatedBy = defaultOwner;
+  publishedBy = defaultOwner;
+  createTime: Date | string = '';
+  updateTime: Date | string = '';
+  publishTime: Date | string | null = null;
+  title = '';
+  description = '';
+  tags: string[] = [];
+  captureAt = '';
+  draftVideo? = undefined;
+  publicVideo? = undefined;
+  tempResources: TempResource[] = [];
+  externalVideoUrl = '';
+  youTubeUrl = '';
+  useInterestingFrameAsThumbnail = false;
+  owners: Owner[] = [];
+  sourceVideoUploadUrl = '';
+  requestCaptions = false;
+  cancelCaptions = false;
+
+  static fromJson(data: VideoJson) {
+    return Object.assign(new Video(), data);
+  }
+
+  static displayTime(time: string | Date | null) {
+    if (time === null) return 'null';
+    if (time instanceof Date) return time.toDateString();
+    else return new Date(time).toDateString();
+  }
 }
 
 export interface Owner {
-	email: string;
-	name: string;
-	id: string;
+  email: string;
+  name: string;
+  id: string;
 }
 
+const defaultOwner = {
+  email: 'mail@default.com',
+  name: 'default',
+  id: 'default-owner',
+};
+
 export enum JobStatus {
-	processing = 'Processing',
-	finished = 'Finished',
-	scheduled = 'Scheduled',
-	default = 'Default',
-	systemError = 'SystemError'
+  processing = 'Processing',
+  finished = 'Finished',
+  scheduled = 'Scheduled',
+  default = 'Default',
+  systemError = 'SystemError',
 }
 
 export interface TempResource {
-	id: string;
-	url: string;
-	resourceType: string;
-	language?: string;
+  id: string;
+  url: string;
+  resourceType: string;
+  language?: string;
 }
 
 export interface Caption {
-	language: string;
-	id: string;
-	isAutoGenerated: boolean;
-	url: string;
-	name: string;
+  language: string;
+  id: string;
+  isAutoGenerated: boolean;
+  url: string;
+  name: string;
 }
 
 interface Job {
-	status: JobStatus;
-	createTime: Date;
-	endTime: Date;
+  status: JobStatus;
+  createTime: Date;
+  endTime: Date;
 }
 
 interface ThumbnailProperties {
-	id: string;
-	isAutoGenerated: boolean;
-	url: string;
+  id: string;
+  isAutoGenerated: boolean;
+  url: string;
 }
 
 // Pulled code from docs-ui/packages/scripts/src/list-view-models.ts
@@ -122,17 +139,18 @@ interface ThumbnailProperties {
  * A page of data.
  * API calls are mapped to this interface for use in the ListViewModel.
  */
- export interface Page<T> {
-	/**
-	 * This page's items.
-	 */
-	items: T[];
+export interface Page<T> {
+  /**
+   * This page's items.
+   */
+  items: T[];
 
-	/**
-	 * Total number of items on the server.
-	 */
-	totalCount: number;
+  /**
+   * Total number of items on the server.
+   */
+  totalCount: number;
 
-    pageIndex: number;
-    pageSize: number;
+  pageIndex: number;
+
+  pageSize: number;
 }
