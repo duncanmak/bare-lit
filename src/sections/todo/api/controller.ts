@@ -1,5 +1,5 @@
-import type { ReactiveControllerHost, ReactiveController } from "lit";
-import { TodoApi, Todo } from './api.ts';
+import type { ReactiveController, ReactiveControllerHost } from "lit";
+import { Todo, TodoApi } from "./api.ts";
 
 export class ApiController implements ReactiveController, TodoApi {
   host: ReactiveControllerHost;
@@ -11,7 +11,7 @@ export class ApiController implements ReactiveController, TodoApi {
   }
 
   hostConnected() {
-    this.listEntries().then(entries => {
+    this.listEntries().then((entries) => {
       this.entries = entries;
       this.host.requestUpdate();
     });
@@ -19,24 +19,25 @@ export class ApiController implements ReactiveController, TodoApi {
 
   async listEntries(): Promise<Todo[]> {
     if (!this.entries) {
-      const resp = await fetch('/assets/todo/db.json');
+      const resp = await fetch("/assets/todo/db.json");
       this.entries = await resp.json();
-      this.count = Math.max(...this.entries!.map(i => i.id));
+      this.count = Math.max(...this.entries!.map((i) => i.id));
     }
 
     return this.entries!;
   }
 
   async updateEntry(id: number, entry: Partial<Todo>) {
-    console.log('Updating', id, 'to', entry);
-    if (id == -1)
-      id = this.count+1;
+    console.log("Updating", id, "to", entry);
+    if (id == -1) {
+      id = this.count + 1;
+    }
 
-    const item = this.entries!.find(i => i.id == id);
+    const item = this.entries!.find((i) => i.id == id);
     if (item) {
       Object.assign(item, entry);
     } else {
-      this.entries!.push({ id, isCompleted: false, text: '', ...entry });
+      this.entries!.push({ id, isCompleted: false, text: "", ...entry });
       this.count++;
     }
 

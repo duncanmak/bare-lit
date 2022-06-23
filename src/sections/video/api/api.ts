@@ -1,8 +1,10 @@
-import { VideoEntry } from "./model.ts";
+import { Page, Video } from "./model.ts";
 
 export interface VideoApi {
-    getEntries(): Promise<any>;
+  set term(value: string);
+  get term(): string;
+  listEntries(): Promise<Page<Video>>;
 }
 
-export { Api as RealApi } from './impl.ts';
-export { Api as MockApi } from './mock.ts';
+export type { Page } from "./model.ts";
+export { Video } from "./model.ts";

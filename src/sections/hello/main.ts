@@ -8,11 +8,10 @@ const { customElement } = await import("lit/decorators/custom-element.js?dts");
 
 await import("time-elements");
 
-const { router } = await import('./' + 'app.js');
+const { router } = await import("./" + "app.js");
 
 @customElement("hello-world")
 export class HelloWorld extends LitElement {
-
   // @property({type: Object}) location = router.location;
 
   constructor() {
@@ -31,9 +30,7 @@ export class HelloWorld extends LitElement {
     this._text = await api.hello();
   }
 
-
   render() {
-
     // function renderLabel(s: string) { return  html`<li>${s}</li>`; }
 
     // function renderNested(obj: any) {
@@ -53,7 +50,7 @@ export class HelloWorld extends LitElement {
     //   meat: [],
     // };
 
-    const text = this.location.params["name"] || 'Hello';
+    const text = this.location.params["name"] || "Hello";
     return html`
       <p><button @click="${this.onClick}" class="hello">${text}</button></p>
       <p class="hello">${this._text}</p>

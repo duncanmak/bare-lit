@@ -7,9 +7,11 @@ export function toString(a: unknown): string {
 
   if (a === null) return "null";
 
-  if (typeof a == "object")
+  if (typeof a == "object") {
     return `{ ${Object.entries(a).map(([k, v]) => `${k}: ${toString(v)}`)} }`;
+  }
 
   console.log(typeof a);
   return "error";
 }
+
