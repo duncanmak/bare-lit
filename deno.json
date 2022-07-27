@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "esnext", "deno.ns"],
-    "strict": true,
-    "experimentalDecorators": true
+    "strict": true
   },
 
   "tasks": {
